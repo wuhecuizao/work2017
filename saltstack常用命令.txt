@@ -1,0 +1,54 @@
+ps -ef |grep  salt-master
+ps -ef |grep  salt-minion
+
+注意上述命令在master和minion上的不同使用
+
+sudo kill 进程号
+sudo salt-master start
+sudo salt-minion start
+
+saltstack认证相关
+认证过程：
+
+    初始化安装minion，在minion的配置文件中定义参数master，指定master端的ip；启动minion服务，minion服务启动后会在本地生成一个密钥对；之后minion会去连接master，并尝试把公钥发送给master，这时候在master端可以使用salt-key来查看minion的认证，一直到master接受minion的认证；之后master与minion就可以认证通信了，这时我们可以在master端通过state模块来配置管理minion，也可以通过cmd.run远程对minion执行命令
+
+[root@minion minion]# pwd
+
+/etc/salt/pki/minion
+
+[root@minion minion]# ls
+
+minion.pem  minion.pub
+
+注意：刚安装完minion，未启动时，pki目录是不存在的
+
+      启动minion服务后，会自动创建pki目录，minion目录和生成一个密钥对
+
+      我们可以把pki目录删除，然后再重启服务，会再重新生成pki目录
+
+可以将master和minion的pki目录删除，让他们重启后重新认证。
+
+curl -k https://192.168.145.132:8888/login -H "Accept: application/x-yaml" -d username='saltapi' -d password='123456aa' -d eauth='pam'
+
+curl -k https://192.168.145.132:8888/ -H "Accept: application/x-yaml" -H "X-Auth-Token: b26c738db764271ffa55cbb330a4e7cb6ce31521" -d client='local' -d tgt='*' -d fun='test.ping'
+
+curl -k https://192.168.145.132:8888 -H "Accept: application/x-yaml" -H "X-Auth-Token: b26c738db764271ffa55cbb330a4e7cb6ce31521" -d client='local' -d tgt='*' -d fun='cmd.run'   -d arg='free -m'
+
+curl -k https://192.168.145.132:8888/ -H "Accept: application/x-yaml" -H "X-Auth-Token: b26c738db764271ffa55cbb330a4e7cb6ce31521" -d client='local' -d tgt='*' -d fun='state.sls' -d arg='test'
+
+
+saltstack奇葩问题汇总：
+一、在yum安装salt-master时，要注意与centos的版本进行对应，不要将低版本的安装到高版本的上去，这样安装不成功；
+二、master和minion启动后回自动进行注册，但要想让他们重新注册，需删除master和minion上的pki文件，以便他们重新生成；
+三、安装salt-api时，要按照http://www.jianshu.com/p/6c9b34cfe3f9一步步进行，不可跨越；
+四、启动master和minion时，使用service salt-master start和service salt-minion start，并配合stop和restart命令，若直接使用salt-master start有时服务关闭时会造成服务无法关闭。
+
+
+169.254.179.198
+
+https://192.168.145.132:8888/ -d client='local' -d tgt='*' -d fun='test.ping'
+
+
+http://www.jianshu.com/p/6c9b34cfe3f9
+
+salt 'host-win' cmd.run cmd='hello.bat' cwd='C:\\salt\\conf'
