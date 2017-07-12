@@ -44,7 +44,7 @@ saltstack奇葩问题汇总：
 四、启动master和minion时，使用service salt-master start和service salt-minion start，并配合stop和restart命令，若直接使用salt-master start有时服务关闭时会造成服务无法关闭。
 
 
-169.254.179.198
+169.254.179.198 ok
 
 https://192.168.145.132:8888/ -d client='local' -d tgt='*' -d fun='test.ping'
 
