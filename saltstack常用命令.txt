@@ -52,3 +52,6 @@ https://192.168.145.132:8888/ -d client='local' -d tgt='*' -d fun='test.ping'
 http://www.jianshu.com/p/6c9b34cfe3f9
 
 salt 'host-win' cmd.run cmd='hello.bat' cwd='C:\\salt\\conf'
+
+
+go to the end
