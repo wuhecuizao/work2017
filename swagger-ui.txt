@@ -1,0 +1,2 @@
+﻿1、swagger-ui bug：array不能带file，仅支持integer和string
+2、swagger-ui bug：formdata中，file与array不能共存，file可与query共存。
