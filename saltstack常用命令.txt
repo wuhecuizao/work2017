@@ -42,6 +42,7 @@ saltstack奇葩问题汇总：
 二、master和minion启动后回自动进行注册，但要想让他们重新注册，需删除master和minion上的pki文件，以便他们重新生成；
 三、安装salt-api时，要按照http://www.jianshu.com/p/6c9b34cfe3f9一步步进行，不可跨越；
 四、启动master和minion时，使用service salt-master start和service salt-minion start，并配合stop和restart命令，若直接使用salt-master start有时服务关闭时会造成服务无法关闭。
+五、传送文件时，要传送的文件不得包含中文字符
 
 
 169.254.179.198 ok
