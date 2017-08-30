@@ -1,0 +1,52 @@
+0、安装salt：
+参考：https://repo.saltstack.com/#rhel
+      （api）http://www.jianshu.com/p/6c9b34cfe3f9
+
+master端使用命令salt-key -L查看当前注册到master端的minion状况，minion id处于Accepted Keys下时，master才能正常操纵minion，
+否则，使用salt-key -A 接纳minions。
+
+备注：若之前当前服务器安装过salt且联接的是其他的master（可能不限于此类情况），则需将master中/etc/salt/pki/master/minions目录下的内容全部删除（可不做，视情处理），
+相应minion的/etc/salt/pki/minion目录下的内容删除。这样minion将重新产生key，并和master进行交互，其key将被保存在/etc/salt/pki/master/minions
+目录下以minion id命名的文件夹下。
+
+1、启动master、minion前使用：
+master端：ps -ef |grep  salt-master
+		  ps -ef |grep  salt-api
+minion端：ps -ef |grep  salt-minion
+查看是否已有进程运行，若有则杀死：
+ps -ef|grep salt-master|grep -v grep|cut -c 9-15|xargs kill -9
+ps -ef|grep salt-api|grep -v grep|cut -c 9-15|xargs kill -9
+ps -ef|grep salt-minion|grep -v grep|cut -c 9-15|xargs kill -9
+
+备注：使用service salt-minion/salt-master/salt-api stop有时不能完全杀死进程，若不强制杀，则有可能出现好几个服务同时运行的情况，造成难以预料的不一致情形
+
+2、启动服务：
+master端：salt-master -l debug
+		  salt-api -l debug
+minion端：service salt-minion start（minion端可不用debug方式）
+
+备注：使用PuTTy远程操作时，若debug窗口关闭，则服务将停止运行。做测试时，要确保master端的两个debug窗口保持开启状态
+
+3、master和minions均启动后，在master端使用命令：salt '*' test.ping进行测试联通性
+若minions均与master保持联通，返回“true”，则后续升级平台出现问题，一般应诊断为平台bug，而非saltstack系统错误。
+
+4、若排查升级平台bug，怀疑为saltstack的锅，则建议按如下方式处理：
+首先，在master端使用：salt 172.18.7.243-test  cmd.run  'echo 'hello'' 做本机测试，测试某个连接器上运行某命令的情况，看是否与预想相符。可验证salt-master服务是否支持相关操作
+然后，使用：curl -k http://10.10.44.108:8888/login -H "Accept: application/x-yaml" -d username='saltapi' -d password='ajzP$9Of@GQ' -d eauth='pam'
+            curl -sS http://10.10.44.108:8888/run \
+                 -H 'Accept: application/x-yaml' \
+				 -H 'Content-type: application/json' \
+				 -H "X-Auth-Token: 0fbe5f1043e62ea415544bb4821aaceb2868424c" \
+				 -d '[{
+						"client": "local",
+						"tgt": "centos-host001",
+						"fun": "cmd.run",
+						"arg": "curl -X POST \"http://10.10.18.16:8080/api/user/login\" -H  \"accept: application/json\" -H  \"content-type: application/x-www-form-urlencoded\" -d \"name=zhaotao&password=zhaotao\"",
+						"return": true,
+						"username": "saltapi",
+						"password": "123456aa",
+						"eauth": "pam"
+					}]'
+		做远程测试，可测试salt-master、salt-api服务是否支持相关操作。
+		
+5、可使用附带python文件进行测试。
