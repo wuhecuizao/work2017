@@ -30,9 +30,9 @@ minion端：service salt-minion start（minion端可不用debug方式）
 3、master和minions均启动后，在master端使用命令：salt '*' test.ping进行测试联通性
 若minions均与master保持联通，返回“true”，则后续升级平台出现问题，一般应诊断为平台bug，而非saltstack系统错误。
 
-4、若排查升级平台bug，怀疑为saltstack的锅，则建议按如下方式处理：
+4、若排查升级平台bug时，怀疑为saltstack的锅，则建议按如下方式处理：
 首先，在master端使用：salt 172.18.7.243-test  cmd.run  'echo 'hello'' 做本机测试，测试某个连接器上运行某命令的情况，看是否与预想相符。可验证salt-master服务是否支持相关操作
-然后，使用：curl -k http://10.10.44.108:8888/login -H "Accept: application/x-yaml" -d username='saltapi' -d password='ajzP$9Of@GQ' -d eauth='pam'
+然后，可使用：curl -k http://10.10.44.108:8888/login -H "Accept: application/x-yaml" -d username='saltapi' -d password='ajzP$9Of@GQ' -d eauth='pam'
             curl -sS http://10.10.44.108:8888/run \
                  -H 'Accept: application/x-yaml' \
 				 -H 'Content-type: application/json' \
@@ -48,5 +48,29 @@ minion端：service salt-minion start（minion端可不用debug方式）
 						"eauth": "pam"
 					}]'
 		做远程测试，可测试salt-master、salt-api服务是否支持相关操作。
+
+	可使用升级平台com.ake.upgrade.service.utility.Calls进行测试（某些情况下可能需要改动com.ake.upgrade.service.utility.utilV201706中的函数）
 		
-5、可使用附带python文件进行测试。
+	可使用如下python程序进行测试：
+#程序开始
+import requests
+import json
+ 
+data = {'username': 'saltapi', 'password': 'ajzP$9Of@GQ', 'eauth': 'pam'}
+headers = {'Accept': 'application/json'} 
+r = requests.post('http://10.10.44.108:8888/login', data=data, headers=headers)
+doc = json.loads(r.text)
+print(doc)
+token=doc['return'][0]['token']
+print(token)
+x=key = str(token).decode("unicode_escape").encode("utf8")
+#执行函数
+datax = {'client': 'local','tgt': '*','fun': 'cmd.run','arg': ['echo \"Hello world!\"'],'expr_form': 'glob'}
+headersx = {'X-Auth-Token': x}
+print(headersx)
+rr=requests.post('http://10.10.44.108:8888', data=datax, headers=headersx)
+print(rr.text)
+doc = json.loads(rr.text)
+yy=doc['return'][0]
+print(yy)
+#程序结束
