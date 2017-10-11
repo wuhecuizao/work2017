@@ -1,4 +1,4 @@
-0、安装salt：
+﻿0、安装salt：
 参考：https://repo.saltstack.com/#rhel
       （api）http://www.jianshu.com/p/6c9b34cfe3f9
 
@@ -74,3 +74,10 @@ doc = json.loads(rr.text)
 yy=doc['return'][0]
 print(yy)
 #程序结束
+
+
+
+5、saltmaster debug 报UnicodeDecodeError: 'ascii' codec can't decode byte错误的解决方法：
+参考http://www.linuxidc.com/Linux/2014-03/98307.htm修改/usr/lib/python2.7/site-packages/salt/master.py,在122行加入：
+reload(sys)
+sys.setdefaultencoding('utf8')
