@@ -1,0 +1,6 @@
+10.10.44.105 root ake123
+/home/ake/workspace/park-parent
+./package.sh
+./deploy.sh
+/home/ake/app/tomcat-mgr/bin
+sh startup.sh

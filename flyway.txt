@@ -1,0 +1,14 @@
+执行新的数据库sql命令flyway migrate
+
+ERROR: Validate failed: Migration checksum mismatch for migration 21
+-> Applied to database : -987276225
+-> Resolved locally    : 1786427535
+执行数据库修复flyway repair
+
+
+[root@bg-saltstack-01 Backend]# /usr/its/flyway-4.2.0/flyway migrate
+
+Database: jdbc:mysql://localhost:3306/temp (MySQL 5.7)
+ERROR: Validate failed: Detected resolved migration not applied to database: 1507701826
+类似这样的错误是因为数据库已执行flyway migrate完成全流程迁移，但又在全流程中间而不是末尾新加入了.sql文件，造成错误
+解决方法：flyway clean，删除所有表，再flyway migrate进行全部重新迁移

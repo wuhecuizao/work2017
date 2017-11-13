@@ -1,0 +1,13 @@
+1、某些minion出现下列问题解决方案
+[root@bg-saltstack-01 custom]# salt 172.18.7.243-test  cmd.run  'sh /usr/its/apache-tomcat-8.0.28-8092/bin/shutdown.sh'
+172.18.7.243-test:
+    Neither the JAVA_HOME nor the JRE_HOME environment variable is defined
+    At least one of these environment variable is needed to run this program
+
+解决措施：
+进入 /usr/its/apache-tomcat-8.0.28-8092/bin
+修改 vim setclasspath.sh
+在# Make sure prerequisite environment variables are   前面
+增加声明JAVA环境变量：
+export JAVA_HOME=/usr/its/jdk1.7.0_80
+export JRE_HOME=/usr/its/jdk1.7.0_80/jre

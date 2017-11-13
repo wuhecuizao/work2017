@@ -1,0 +1,82 @@
+吴方生(吴方生) 2017-06-09 09:48:28
+EXPLAIN
+select A.fk_AreaID,
+       A.countApp,
+       A.countWechat,
+       FullPath
+  from(
+select fk_AreaID, sum(countWechat) countWechat, sum(countApp) countApp
+  from(
+select count(USER_ID) countWechat, 0 countApp, C.fk_AreaID
+  from(
+select USER_ID, PARK_ID, MOBILE
+  from parking_bill A
+  INNER JOIN `user` ON `user`.ID= A.USER_ID
+   AND `user`.MOBILE< 0
+ where CHECK_OUT_TIME>= '2017-06-08 00:00:
+吴方生(吴方生) 2017-06-09 09:48:28
+00'
+   AND CHECK_OUT_TIME<= '2017-06-08 23:59:59.002'
+   and USER_ID is not null
+   AND NOT EXISTS(
+select USER_ID
+  from parking_bill B
+ where CHECK_OUT_TIME< '2016-12-01 00:00:00'
+   and A.USER_ID= B.USER_ID)) WechatCount
+  LEFT JOIN tbl_device_parking C ON WechatCount.PARK_ID= C.pk_GlobalID
+ GROUP BY C.fk_AreaID
+ union all
+select 0 countWechat, count(USER_ID) countApp, C.fk_Are
+吴方生(吴方生) 2017-06-09 09:48:28
+aID
+  from(
+select USER_ID, PARK_ID, MOBILE
+  from parking_bill A
+  INNER JOIN `user` ON `user`.ID= A.USER_ID
+   AND `user`.MOBILE> 0
+ where CHECK_OUT_TIME>= '2017-06-08 00:00:00'
+   AND CHECK_OUT_TIME<= '2017-06-08 23:59:59.002'
+   and USER_ID is not null
+   AND NOT EXISTS(
+select USER_ID
+  from parking_bill B
+ where CHECK_OUT_TIME< '2017-06-08 00:00:00'
+   and A.USER_
+吴方生(吴方生) 2017-06-09 09:48:28
+ID= B.USER_ID)) APPCount
+  LEFT JOIN tbl_device_parking C ON APPCount.PARK_ID= C.pk_GlobalID
+ GROUP BY C.fk_AreaID) NewUserCountArea
+ GROUP BY fk_AreaID) A
+  INNER JOIN tbl_permission_area ON fk_AreaID= Pk_AreaID
+吴方生(吴方生) 2017-06-09 09:48:37
+这个SQL谁的
+吴方生(吴方生) 2017-06-09 09:48:58
+SELECT uc.* , u.MOBILE, ucai.CRED_FILE, ucai.ID as CAR_USER_AUTH_ID, ucai.AUTH_STATUS FROM USER_CAR uc LEFT JOIN `USER` u ON u.ID =uc.USER_ID LEFT JOIN USER_CAR_AUTH_INFO ucai ON ucai.USER_CAR_ID=uc.ID WHERE 1=1 ORDER BY uc.ID DESC limit 0,100
+吴方生(吴方生) 2017-06-09 09:49:03
+select c.NAME, g.SERIAL_NUMBER, g.GRANT_TYPE, g.OBTAIN_OBJ, g.GRANT_TIME,g.COUPON_TMP_ID from PARK_TRADER_COUPON_GRANT_RECORD g, PARK_TRADER_COUPON_TEMPLATE c where g.COUPON_TMP_ID = c.ID and g.GRANT_TRADER = 1994 and g.OBTAIN_OBJ like CONCAT('%', '粤BE64R9', '%') order by g.GRANT_TIME desc limit 10
+吴方生(吴方生) 2017-06-09 09:49:20
+目前整个平台就这三个SQL耗资源了
+吴方生(吴方生) 2017-06-09 09:50:42
+这三个巨无霸，相关同事认领下
+吴方生(吴方生) 2017-06-09 09:50:49
+在下个版本解决
+罗凯(罗凯) 2017-06-09 09:52:34
+认领有奖吗
+江锦灿(江锦灿) 2017-06-09 09:53:07
+最后一个很明显是...
+吴方生(吴方生) 2017-06-09 09:54:17
+不认领的查出来，罚抄写SQL性能优化宝典10遍！
+江锦灿(江锦灿) 2017-06-09 09:56:31
+最后一个是运营商平台的, 当前商家查找指定车牌号的发放记录
+江锦灿(江锦灿) 2017-06-09 09:56:42
+微信里面的
+罗凯(罗凯) 2017-06-09 09:57:46
+哪个地方
+江锦灿(江锦灿) 2017-06-09 09:58:24
+商家微信, 发券页面, 有个发券记录, 搜索车牌号
+罗凯(罗凯) 2017-06-09 09:59:12
+那这个就没法改 要模糊匹配
+吴方生(吴方生) 2017-06-09 10:01:05
+现优化部分，如用户有输入有省份简称，就不要全%%
+罗凯(罗凯) 2017-06-09 10:02:33
+可以

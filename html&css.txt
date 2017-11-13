@@ -1,0 +1,51 @@
+1、div是列，如果没有宽度，它就占据整个页面宽度，高度视其中包含的内容确定，<div></div>内部的div则是按顺序从左到右的排列，排列完页面
+则向下一行继续排列。
+2、scheme://host.domain:port/path/filename 
+
+说明:
+
+        scheme - 定义因特网服务的类型。最常见的类型是 http
+
+        host - 定义域主机（http 的默认主机是 www）
+
+        domain - 定义因特网域名，比如 w3cschool.cn
+
+        :port - 定义主机上的端口号（http 的默认端口号是 80）
+
+        path - 定义服务器上的路径（如果省略，则文档必须位于网站的根目录中）。
+
+        filename - 定义文档/资源的名称
+3、在WEB前端开发中,HTML,CSS,JS这三家三驾马车分别代表着结构，展示，和交互。而div+css是符合解耦这一思想的，div用来控制布局，css用来控制样式。好处从小了说是整个页面的代码组织结构更合理，耦合度更低，从大了说是更利于前端开发的深度分工和复杂合作。
+
+4、GET 还是 POST？
+
+与 POST 相比，GET 更简单也更快，并且在大部分情况下都能用。
+
+然而，在以下情况中，请使用 POST 请求：
+
+    无法使用缓存文件（更新服务器上的文件或数据库）
+
+    向服务器发送大量数据（POST 没有数据量限制）
+
+    发送包含未知字符的用户输入时，POST 比 GET 更稳定也更可靠
+
+5、AJAX是基于现有的Internet标准，并且联合使用它们：
+
+    XMLHttpRequest 对象 (异步的与服务器交换数据)
+
+    JavaScript/DOM (信息显示/交互)
+
+    CSS (给数据定义样式)
+
+    XML (作为转换数据的格式)
+6、jQuery库包含以下功能：
+
+    HTML 元素选取
+    HTML 元素操作
+    CSS 操作
+    HTML 事件函数
+    JavaScript 特效和动画
+    HTML DOM 遍历和修改
+    AJAX
+    Utilities
+7、 CDN（内容分发网络）

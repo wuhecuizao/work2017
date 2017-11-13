@@ -1,16 +1,16 @@
-ï»¿ps -ef |grep  salt-master
+ps -ef |grep  salt-master
 ps -ef |grep  salt-minion
 
-æ³¨æ„ä¸Šè¿°å‘½ä»¤åœ¨masterå’Œminionä¸Šçš„ä¸åŒä½¿ç”¨
+×¢ÒâÉÏÊöÃüÁîÔÚmasterºÍminionÉÏµÄ²»Í¬Ê¹ÓÃ
 
-sudo kill è¿›ç¨‹å·
+sudo kill ½ø³ÌºÅ
 sudo salt-master start
 sudo salt-minion start
 
-saltstackè®¤è¯ç›¸å…³
-è®¤è¯è¿‡ç¨‹ï¼š
+saltstackÈÏÖ¤Ïà¹Ø
+ÈÏÖ¤¹ı³Ì£º
 
-    åˆå§‹åŒ–å®‰è£…minionï¼Œåœ¨minionçš„é…ç½®æ–‡ä»¶ä¸­å®šä¹‰å‚æ•°masterï¼ŒæŒ‡å®šmasterç«¯çš„ipï¼›å¯åŠ¨minionæœåŠ¡ï¼ŒminionæœåŠ¡å¯åŠ¨åä¼šåœ¨æœ¬åœ°ç”Ÿæˆä¸€ä¸ªå¯†é’¥å¯¹ï¼›ä¹‹åminionä¼šå»è¿æ¥masterï¼Œå¹¶å°è¯•æŠŠå…¬é’¥å‘é€ç»™masterï¼Œè¿™æ—¶å€™åœ¨masterç«¯å¯ä»¥ä½¿ç”¨salt-keyæ¥æŸ¥çœ‹minionçš„è®¤è¯ï¼Œä¸€ç›´åˆ°masteræ¥å—minionçš„è®¤è¯ï¼›ä¹‹åmasterä¸minionå°±å¯ä»¥è®¤è¯é€šä¿¡äº†ï¼Œè¿™æ—¶æˆ‘ä»¬å¯ä»¥åœ¨masterç«¯é€šè¿‡stateæ¨¡å—æ¥é…ç½®ç®¡ç†minionï¼Œä¹Ÿå¯ä»¥é€šè¿‡cmd.runè¿œç¨‹å¯¹minionæ‰§è¡Œå‘½ä»¤
+    ³õÊ¼»¯°²×°minion£¬ÔÚminionµÄÅäÖÃÎÄ¼şÖĞ¶¨Òå²ÎÊımaster£¬Ö¸¶¨master¶ËµÄip£»Æô¶¯minion·şÎñ£¬minion·şÎñÆô¶¯ºó»áÔÚ±¾µØÉú³ÉÒ»¸öÃÜÔ¿¶Ô£»Ö®ºóminion»áÈ¥Á¬½Ómaster£¬²¢³¢ÊÔ°Ñ¹«Ô¿·¢ËÍ¸ømaster£¬ÕâÊ±ºòÔÚmaster¶Ë¿ÉÒÔÊ¹ÓÃsalt-keyÀ´²é¿´minionµÄÈÏÖ¤£¬Ò»Ö±µ½master½ÓÊÜminionµÄÈÏÖ¤£»Ö®ºómasterÓëminion¾Í¿ÉÒÔÈÏÖ¤Í¨ĞÅÁË£¬ÕâÊ±ÎÒÃÇ¿ÉÒÔÔÚmaster¶ËÍ¨¹ıstateÄ£¿éÀ´ÅäÖÃ¹ÜÀíminion£¬Ò²¿ÉÒÔÍ¨¹ıcmd.runÔ¶³Ì¶ÔminionÖ´ĞĞÃüÁî
 
 [root@minion minion]# pwd
 
@@ -20,13 +20,13 @@ saltstackè®¤è¯ç›¸å…³
 
 minion.pem  minion.pub
 
-æ³¨æ„ï¼šåˆšå®‰è£…å®Œminionï¼Œæœªå¯åŠ¨æ—¶ï¼Œpkiç›®å½•æ˜¯ä¸å­˜åœ¨çš„
+×¢Òâ£º¸Õ°²×°Íêminion£¬Î´Æô¶¯Ê±£¬pkiÄ¿Â¼ÊÇ²»´æÔÚµÄ
 
-      å¯åŠ¨minionæœåŠ¡åï¼Œä¼šè‡ªåŠ¨åˆ›å»ºpkiç›®å½•ï¼Œminionç›®å½•å’Œç”Ÿæˆä¸€ä¸ªå¯†é’¥å¯¹
+      Æô¶¯minion·şÎñºó£¬»á×Ô¶¯´´½¨pkiÄ¿Â¼£¬minionÄ¿Â¼ºÍÉú³ÉÒ»¸öÃÜÔ¿¶Ô
 
-      æˆ‘ä»¬å¯ä»¥æŠŠpkiç›®å½•åˆ é™¤ï¼Œç„¶åå†é‡å¯æœåŠ¡ï¼Œä¼šå†é‡æ–°ç”Ÿæˆpkiç›®å½•
+      ÎÒÃÇ¿ÉÒÔ°ÑpkiÄ¿Â¼É¾³ı£¬È»ºóÔÙÖØÆô·şÎñ£¬»áÔÙÖØĞÂÉú³ÉpkiÄ¿Â¼
 
-å¯ä»¥å°†masterå’Œminionçš„pkiç›®å½•åˆ é™¤ï¼Œè®©ä»–ä»¬é‡å¯åé‡æ–°è®¤è¯ã€‚
+¿ÉÒÔ½«masterºÍminionµÄpkiÄ¿Â¼É¾³ı£¬ÈÃËûÃÇÖØÆôºóÖØĞÂÈÏÖ¤¡£
 
 curl -k https://192.168.145.132:8888/login -H "Accept: application/x-yaml" -d username='saltapi' -d password='123456aa' -d eauth='pam'
 
@@ -37,15 +37,14 @@ curl -k https://192.168.145.132:8888 -H "Accept: application/x-yaml" -H "X-Auth-
 curl -k https://192.168.145.132:8888/ -H "Accept: application/x-yaml" -H "X-Auth-Token: b26c738db764271ffa55cbb330a4e7cb6ce31521" -d client='local' -d tgt='*' -d fun='state.sls' -d arg='test'
 
 
-saltstackå¥‡è‘©é—®é¢˜æ±‡æ€»ï¼š
-ä¸€ã€åœ¨yumå®‰è£…salt-masteræ—¶ï¼Œè¦æ³¨æ„ä¸centosçš„ç‰ˆæœ¬è¿›è¡Œå¯¹åº”ï¼Œä¸è¦å°†ä½ç‰ˆæœ¬çš„å®‰è£…åˆ°é«˜ç‰ˆæœ¬çš„ä¸Šå»ï¼Œè¿™æ ·å®‰è£…ä¸æˆåŠŸï¼›
-äºŒã€masterå’Œminionå¯åŠ¨åå›è‡ªåŠ¨è¿›è¡Œæ³¨å†Œï¼Œä½†è¦æƒ³è®©ä»–ä»¬é‡æ–°æ³¨å†Œï¼Œéœ€åˆ é™¤masterå’Œminionä¸Šçš„pkiæ–‡ä»¶ï¼Œä»¥ä¾¿ä»–ä»¬é‡æ–°ç”Ÿæˆï¼›
-ä¸‰ã€å®‰è£…salt-apiæ—¶ï¼Œè¦æŒ‰ç…§http://www.jianshu.com/p/6c9b34cfe3f9ä¸€æ­¥æ­¥è¿›è¡Œï¼Œä¸å¯è·¨è¶Šï¼›
-å››ã€å¯åŠ¨masterå’Œminionæ—¶ï¼Œä½¿ç”¨service salt-master startå’Œservice salt-minion startï¼Œå¹¶é…åˆstopå’Œrestartå‘½ä»¤ï¼Œè‹¥ç›´æ¥ä½¿ç”¨salt-master startæœ‰æ—¶æœåŠ¡å…³é—­æ—¶ä¼šé€ æˆæœåŠ¡æ— æ³•å…³é—­ã€‚
-äº”ã€ä¼ é€æ–‡ä»¶æ—¶ï¼Œè¦ä¼ é€çš„æ–‡ä»¶ä¸å¾—åŒ…å«ä¸­æ–‡å­—ç¬¦
+saltstackÆæİâÎÊÌâ»ã×Ü£º
+Ò»¡¢ÔÚyum°²×°salt-masterÊ±£¬Òª×¢ÒâÓëcentosµÄ°æ±¾½øĞĞ¶ÔÓ¦£¬²»Òª½«µÍ°æ±¾µÄ°²×°µ½¸ß°æ±¾µÄÉÏÈ¥£¬ÕâÑù°²×°²»³É¹¦£»
+¶ş¡¢masterºÍminionÆô¶¯ºó»Ø×Ô¶¯½øĞĞ×¢²á£¬µ«ÒªÏëÈÃËûÃÇÖØĞÂ×¢²á£¬ĞèÉ¾³ımasterºÍminionÉÏµÄpkiÎÄ¼ş£¬ÒÔ±ãËûÃÇÖØĞÂÉú³É£»
+Èı¡¢°²×°salt-apiÊ±£¬Òª°´ÕÕhttp://www.jianshu.com/p/6c9b34cfe3f9Ò»²½²½½øĞĞ£¬²»¿É¿çÔ½£»
+ËÄ¡¢Æô¶¯masterºÍminionÊ±£¬Ê¹ÓÃservice salt-master startºÍservice salt-minion start£¬²¢ÅäºÏstopºÍrestartÃüÁî£¬ÈôÖ±½ÓÊ¹ÓÃsalt-master startÓĞÊ±·şÎñ¹Ø±ÕÊ±»áÔì³É·şÎñÎŞ·¨¹Ø±Õ¡£
 
 
-169.254.179.198 ok
+169.254.179.198
 
 https://192.168.145.132:8888/ -d client='local' -d tgt='*' -d fun='test.ping'
 
@@ -53,6 +52,3 @@ https://192.168.145.132:8888/ -d client='local' -d tgt='*' -d fun='test.ping'
 http://www.jianshu.com/p/6c9b34cfe3f9
 
 salt 'host-win' cmd.run cmd='hello.bat' cwd='C:\\salt\\conf'
-
-
-go to the end

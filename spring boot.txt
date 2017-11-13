@@ -1,0 +1,4 @@
+springMVC的controller是单例模式，不要在controller里定义操作的属性，线程是非安全的。
+
+采用spring boot构建的程序，如果maven中集成有tomcat，在eclipse中运行时，只需要找到相应的application右键运行java application即可
+不可采用run on server的方式，这样会开启程序两遍，造成端口占用错误。

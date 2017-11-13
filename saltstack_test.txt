@@ -1,0 +1,428 @@
+#通过.sls文件在节点执行sql语句
+curl -k http://192.168.145.132:8888/ -H "Accept: application/x-yaml" -H "X-Auth-Token: c6e54aa00d2b373548a1715334b7d12e85a12333" -d client='local' -d tgt='host-win' -d fun='state.sls' -d arg='sql1'
+
+#通过远程执行方式在节点执行shell文件(LINUX)
+curl -k https://192.168.145.132:8888/ -H "Accept: application/x-yaml" -H "X-Auth-Token: 4effa12a71dd89ffe5d7ee89f2fc1a43b4a1c7fe" -d client='local' -d tgt='centos-host001' -d fun='cmd.run' -d arg='sh /hello.sh'
+curl -sS http://192.168.145.132:8888/run \
+    -H 'Accept: application/x-yaml' \
+    -H 'Content-type: application/json' \
+    -H "X-Auth-Token: 6a1f116fe397b7223613fa6bebc5142f3c277790" \
+    -d '[{
+        "client": "local_batch",
+        "name": "centos-host001",
+        "fun": "file.managed",
+        "source": "salt://test11.txt",
+        "username": "saltapi",
+        "password": "123456aa",
+        "eauth": "pam"
+    }]'
+#通过远程执行方式在节点执行.bat文件(win)
+curl -k https://192.168.145.132:8888/ -H "Accept: application/x-yaml" -H "X-Auth-Token: 4f1962f5209536be9dfa543fd4727f388f0480a7" -d client='local' -d tgt='host-win' -d fun='cmd.run' -d arg='C:\\salt\\conf\\hello.bat'
+
+salt 'host-win' cmd.run cmd='hello.bat' cwd='C:\\salt\\conf'
+salt 'host-win' cmd.run cmd='sqltest.bat' cwd='C:\\salt\\conf'
+
+curl -k http://192.168.145.132:8888/run -H "Accept: application/x-yaml" -H "X-Auth-Token: b8b1c43ae7dc9090afade489eae6e8a78b2eb2c1" -d client='local' -d tgt='host-win' -d fun='test.ping'
+
+curl -sSk http://192.168.145.132:8888/login \
+    -H 'Accept: application/x-yaml' \
+    -d username=saltapi \
+    -d password=123456aa \
+    -d eauth=pam
+
+curl -sS http://192.168.145.132:8888/run \
+    -H 'Accept: application/x-yaml' \
+    -H 'Content-type: application/json' \
+    -H "X-Auth-Token: b8b1c43ae7dc9090afade489eae6e8a78b2eb2c1" \
+    -d '[{
+        "client": "local_batch",
+        "tgt": "*",
+        "fun": "test.ping",
+        "username": "saltapi",
+        "password": "123456aa",
+        "eauth": "pam"
+    }]'
+
+
+curl -sS http://192.168.145.132:8888/run \
+    -H 'Accept: application/x-yaml' \
+    -H 'Content-type: application/json' \
+    -H "X-Auth-Token: 956c3133dbe09add7b8f3ddef61a1cd7c815a065" \
+    -d '[{
+        "client": "local_batch",
+        "tgt": "*",
+        "fun": "cmd.run",
+        "arg": "sh /hello.sh",
+        "username": "saltapi",
+        "password": "123456aa",
+        "eauth": "pam"
+    }]'
+
+curl -sS http://192.168.145.132:8888/run \
+    -H 'Accept: application/x-yaml' \
+    -H 'Content-type: application/json' \
+    -H "X-Auth-Token: 59a397c07528132e2ba922307c521ea9084171b7" \
+    -d '[{
+        "client": "local_batch",
+        "tgt": "*",
+        "fun": "state.sls",
+        "arg": "sh /hello.sh",
+        "username": "saltapi",
+        "password": "123456aa",
+        "eauth": "pam"
+    }]'
+
+
+curl -sS http://192.168.145.132:8888/run \
+    -H 'Accept: application/x-yaml' \
+    -H 'Content-type: application/json' \
+    -H "X-Auth-Token: 59a397c07528132e2ba922307c521ea9084171b7" \
+    -d '[{
+        "client": "local_batch",
+        "tgt": "*",
+        "fun": "state.apply",
+        "arg": "test",
+        "username": "saltapi",
+        "password": "123456aa",
+        "eauth": "pam"
+    }]'
+
+curl -sS http://192.168.145.132:8888/run \
+    -H 'Accept: application/x-yaml' \
+    -H 'Content-type: application/json' \
+    -H "X-Auth-Token: 59a397c07528132e2ba922307c521ea9084171b7" \
+    -d '[{
+        "client": "local_batch",
+        "tgt": "host-win",
+        "fun": "state.apply",
+        "arg": "sql1",
+        "username": "saltapi",
+        "password": "123456aa",
+        "eauth": "pam"
+    }]'
+
+curl -sS http://192.168.145.132:8888/run \
+    -H 'Accept: application/x-yaml' \
+    -H 'Content-type: application/json' \
+    -H "X-Auth-Token: 5afff8127ffdb01a6fcef949c58112fb9f557435" \
+    -d '[{
+        "client": "local_batch",
+        "tgt": "*",
+        "fun": "state.apply",
+        "arg": "filetransferbackup",
+        "username": "saltapi",
+        "password": "123456aa",
+        "eauth": "pam"
+    }]'
+
+curl -k http://192.168.145.132:8888/login -H "Accept: application/x-yaml" -d username='saltapi' -d password='123456aa' -d eauth='pam'
+
+curl -k http://192.168.145.132:8888/ -H "Accept: application/x-yaml" -H "X-Auth-Token: 5e802573c67aa2230f86e2c22244e2c4cb5b602d" -d client='local' -d tgt='centos-host001' -d fun='cmd.run' -d arg='sh /hell.sh'
+
+curl -sS http://192.168.145.132:8888/run \
+    -H 'Accept: application/x-yaml' \
+    -H 'Content-type: application/json' \
+    -H "X-Auth-Token: 5e802573c67aa2230f86e2c22244e2c4cb5b602d" \
+    -d '[{
+        "client": "local_batch",
+        "tgt": "*",
+        "fun": "cmd.run",
+        "arg": "sh /hell.sh",
+        "return": true,
+        "username": "saltapi",
+        "password": "123456aa",
+        "eauth": "pam"
+    }]'
+
+curl -sS http://192.168.145.132:8888/run \
+    -H 'Accept: application/x-yaml' \
+    -H 'Content-type: application/json' \
+    -H "X-Auth-Token: 5e802573c67aa2230f86e2c22244e2c4cb5b602d" \
+    -d '[{
+        "client": "local_batch",
+        "tgt": "*",
+        "fun": "state.apply",
+        "arg": "test",
+        "username": "saltapi",
+        "password": "123456aa",
+        "eauth": "pam"
+    }]'
+
+
+20170626192028934950:
+    ----------
+    Arguments:
+        - test
+    Function:
+        state.apply
+    Minions:
+        - host-win
+    Result:
+        ----------
+        host-win:
+            ----------
+            out:
+                highstate
+            return:
+                ----------
+                cmd_|-apache_|-ls -version_|-run:
+                    ----------
+                    __id__:
+                        apache
+                    __run_num__:
+                        0
+                    changes:
+                        ----------
+                        pid:
+                            6088
+                        retcode:
+                            1
+                        stderr:
+                            'ls' is not recognized as an internal or external command,
+                            operable program or batch file.
+                        stdout:
+                    comment:
+                        Command "ls -version" run
+                    duration:
+                        53.0
+                    name:
+                        ls -version
+                    result:
+                        False
+                    start_time:
+                        11:20:39.414000
+    StartTime:
+        2017, Jun 26 19:20:28.934950
+    Target:
+        - host-win
+    Target-type:
+        list
+    User:
+
+
+20170626194142568237:
+    ----------
+    Arguments:
+        - sh /hell.sh
+    Function:
+        cmd.run
+    Minions:
+        - centos-host001
+    Result:
+        ----------
+        centos-host001:
+            ----------
+            return:
+                sh: /hell.sh: No such file or directory
+    StartTime:
+        2017, Jun 26 19:41:42.568237
+    Target:
+        - centos-host001
+    Target-type:
+        list
+    User:
+        root
+
+curl -sS http://192.168.145.132:8888/run \
+    -H 'Accept: application/x-yaml' \
+    -H 'Content-type: application/json' \
+    -H "X-Auth-Token: ab1adad7597a1846936fa337214120ea7630d0d4" \
+    -d '[{
+        "client": "local_batch",
+        "tgt": "*",
+        "arg": ["salt://test11.txt", "/test.txt"],
+        "fun": "cp.get_file",        
+        "username": "saltapi",
+        "password": "123456aa",
+        "eauth": "pam"
+    }]'
+
+curl -sS http://192.168.145.132:8888/run \
+    -H 'Accept: application/x-yaml' \
+    -H 'Content-type: application/json' \
+    -H "X-Auth-Token: 6a1f116fe397b7223613fa6bebc5142f3c277790" \
+    -d '[{
+        "client": "local_batch",
+        "tgt": "*",
+        "fun": "state.apply",
+        "arg": "filetransferbackup",
+        "username": "saltapi",
+        "password": "123456aa",
+        "eauth": "pam"
+    }]'
+
+
+curl -sS http://192.168.145.132:8888/run \
+    -H 'Accept: application/x-yaml' \
+    -H 'Content-type: application/json' \
+    -H "X-Auth-Token: 2c21099528d84116284273774df868f041d99222" \
+    -d '[{
+        "client": "local_batch",
+        "tgt": "*",
+        "arg": ["/testme.txt", "salt://testme.txt"],
+        "fun": "cp.get_file",        
+        "username": "saltapi",
+        "password": "123456aa",
+        "eauth": "pam"
+    }]'
+
+curl -sS http://192.168.145.132:8888/run \
+    -H 'Accept: application/x-yaml' \
+    -H 'Content-type: application/json' \
+    -H "X-Auth-Token: 47edc60c66b61bab2d3c1ed20a5a27c78cdd88f2" \
+    -d '[{
+        "client": "local_batch",
+        "tgt": "centos-host001",
+        "fun": "cp.push",
+        "arg": "/testme.txt",
+        "username": "saltapi",
+        "password": "123456aa",
+        "eauth": "pam"
+    }]'
+
+curl -sS http://192.168.145.132:8888/run \
+    -H 'Accept: application/x-yaml' \
+    -H 'Content-type: application/json' \
+    -H "X-Auth-Token: c5fd158a6d1448b7dc1b7de19250fddb4ef640e7" \
+    -d '[{
+        "client": "local_batch",
+        "tgt": "*",
+        "arg": ["/hello.txt","/"],
+        "fun": "cp.push",        
+        "username": "saltapi",
+        "password": "123456aa",
+        "eauth": "pam"
+    }]'
+
+salt 'centos-host001' --log-level=all  cp.push /testme.txt
+
+
+curl -sS http://192.168.145.132:8888/run     -H 'Accept: application/x-yaml'     -H 'Content-type: application/json'     -H "X-Auth-Token: c5fd158a6d1448b7dc1b7de19250fddb4ef640e7"     -d '[{
+        "client": "local_bkwargatch",
+        "tgt": "centos-host001",
+        "arg": ["/testme.txt", "upload_path='/new/path/fstab'"],
+        "fun": "cp.push",        
+        "username": "saltapi",
+        "password": "123456aa",
+        "eauth": "pam"
+    }]'
+
+salt 'centos-host001' cp.push /testme.txt upload_path='/new/path/fstab'
+
+
+curl -sS http://192.168.145.132:8888/run \
+    -H 'Accept: application/x-yaml' \
+    -H 'Content-type: application/json' \
+    -H "X-Auth-Token: e3688034ca584c41790a43a2a4b358f6e98b4638" \
+    -d '[{
+        "client": "local_batch",
+        "tgt": "*",
+        "arg": ["salt://service", "/home"],
+        "fun": "cp.get_dir",        
+        "username": "saltapi",
+        "password": "123456aa",
+        "eauth": "pam"
+    }]'
+
+
+curl -sS http://192.168.145.132:8888/run     -H 'Accept: application/x-yaml'     -H 'Content-type: application/json'     -H "X-Auth-Token: c5fd158a6d1448b7dc1b7de19250fddb4ef640e7"     -d '[{
+        "client": "local_batch",
+        "tgt": "centos-host001",
+        "arg": ["/hello.txt"],
+        "kwarg": ["upload_path='/new/'"],
+        "fun": "cp.push",        
+        "username": "saltapi",
+        "password": "123456aa",
+        "eauth": "pam"
+    }]'
+
+
+curl -sS http://192.168.145.132:8888/run     -H 'Accept: application/x-yaml'     -H 'Content-type: application/json'     -H "X-Auth-Token: ee53ad7199a59a2722db2a314d3d4e8e2bfc510d"     -d '[{
+        "client": "local_batch",
+        "tgt": "centos-host001",
+        "arg": ["/wuhe"],
+        "fun": "file.remove",        
+        "username": "saltapi",
+        "password": "123456aa",
+        "eauth": "pam"
+    }]'
+
+
+
+curl -sS http://192.168.145.132:8888/ \
+-H "Accept: application/x-yaml" \
+-H 'Content-type: application/json' \
+-H "X-Auth-Token: 0fbe5f1043e62ea415544bb4821aaceb2868424c" \
+-d '[{
+    "client": "local_batch",
+    "tgt": "centos-host001",
+    "arg": ["salt://jdk","/home"],
+    "fun": "cp.get_dir",
+    "username": "saltapi",
+    "password": "123456aa",
+    "eauth": "pam"
+}]'
+
+curl -k http://192.168.145.132:8888/login -H "Accept: application/x-yaml" -d username='saltapi' -d password='123456aa' -d eauth='pam'
+
+curl -sS http://192.168.145.132:8888/run \
+    -H 'Accept: application/x-yaml' \
+    -H 'Content-type: application/json' \
+    -H "X-Auth-Token: 0fbe5f1043e62ea415544bb4821aaceb2868424c" \
+    -d '[{
+        "client": "local_batch",
+        "tgt": "centos-host001",
+        "fun": "cmd.run",
+        "arg": "sh /shell.sh",
+        "return": true,
+        "username": "saltapi",
+        "password": "123456aa",
+        "eauth": "pam"
+    }]'
+
+##在cmd.run中运行curl命令，但curl命令中的'"'需进行转义
+curl -sS http://192.168.145.132:8888/run \
+    -H 'Accept: application/x-yaml' \
+    -H 'Content-type: application/json' \
+    -H "X-Auth-Token: 0fbe5f1043e62ea415544bb4821aaceb2868424c" \
+    -d '[{
+        "client": "local_batch",
+        "tgt": "centos-host001",
+        "fun": "cmd.run",
+        "arg": "curl -X POST \"http://10.10.18.16:8080/api/user/login\" -H  \"accept: application/json\" -H  \"content-type: application/x-www-form-urlencoded\" -d \"name=zhaotao&password=zhaotao\"",
+        "return": true,
+        "username": "saltapi",
+        "password": "123456aa",
+        "eauth": "pam"
+    }]'
+
+	
+	curl -sS http://10.10.44.108:8888/run \
+    -H 'Accept: application/x-yaml' \
+    -H 'Content-type: application/json' \
+    -H "X-Auth-Token: 0fbe5f1043e62ea415544bb4821aaceb2868424c" \
+    -d '[{
+        "client": "local",
+        "tgt": "*",
+        "fun": "test.ping",
+        "return": true,
+        "username": "saltapi",
+        "password": "ajzP$9Of@GQ",
+        "eauth": "pam"
+    }]'
+	
+	curl -X POST http://10.10.44.109:8092/autoUpgradeApi.jsp \
+	-H 'accept: application/json' \
+	-d  'cmd=upgradeYTJ' \
+	-d  'version=\"v2.4.4.0\"' \
+	-d  'fileName=\"dcm_v2.4.4.0_full_cold/dcm_v2.4.4.0_full_cold.zip\"'
+	
+	curl -sS http://10.10.44.109:8092/vems/autoUpgradeApi.jsp -d  "cmd=getParkVersionInfo"
+	
+	
+	
+	curl -X GET --header 'Content-Type: application/x-www-form-urlencoded' --header 'Accept: application/json' 'http://localhost:8092/vems/autoUpgradeApi.jsp?cmd=upgradeYTJ&version=v2.4.4.0&fileName=dcm_v2.4.4.0_full_cold/dcm_v2.4.4.0_full_cold.zip'
+	
+	
+	curl -X GET 'http://localhost:8092/vems/autoUpgradeApi.jsp?cmd=upgradeYTJ&version=v2.4.4.0&fileName=dcm_v2.3.3.0_full_cold/dcm_v2.3.3.0_full_cold.zip'
+	

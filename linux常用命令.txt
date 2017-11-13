@@ -1,0 +1,18 @@
+ifconfig
+vim o esc :wq
+sudo
+kill -9 进程号 在“kill 进程号”无用时，若还无用则只能重启
+
+
+ Linux 下安装pip
+安装pip
+使用脚本安装和升级pip
+
+要安装或升级pip，需要下载 get-pip.py. 地址：https://bootstrap.pypa.io/get-pip.py
+
+然后运行以下命令 (需要管理员权限):
+
+$ wget https://bootstrap.pypa.io/get-pip.py
+$ python get-pip.py
+$ pip -V　　#查看pip版本
+
