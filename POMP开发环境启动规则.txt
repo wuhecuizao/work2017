@@ -1,19 +1,24 @@
-POMP²¿Êğ²ßÂÔ£º
-10.10.44.105£¨172.18.30.5£© root ake123
+ï»¿POMPéƒ¨ç½²ç­–ç•¥ï¼š
+10.10.44.105ï¼ˆ172.18.30.5ï¼‰ root ake123
 /home/ake/workspace/park-parent
 ./package.sh
 ./deploy.sh
 /home/ake/app/tomcat-mgr/bin
 sh startup.sh
 
-Ç°ÖÃ»ú²¿Êğ²ßÂÔ£º
-10.10.44.105£¨172.18.30.5£© root ake123
-#´ò°ü
+å‰ç½®æœºéƒ¨ç½²ç­–ç•¥ï¼š
+10.10.44.105ï¼ˆ172.18.30.5ï¼‰ root ake123
+#æ‰“åŒ…
 /home/ake/workspace/park-data-connector-parent
 ./package.sh
-#²¿Êğ
+#éƒ¨ç½²
 /home/ake/app/park-data-connector-handler
 ./fetch.sh
 
-ÏßÏÂÏßÉÏÊı¾İÍ¬²½½Ó¿Ú£¨12.26ÆôÓÃĞÂipµØÖ·£©
-http://172.18.255.232:88/svn/AZP_ProdctrlArea/04ÑĞ·¢ÎÄµµ-²úÆ·ÎÄ¼ş/07½Ó¿ÚÎÄµµ/01ÎÒ·½½Ó¿ÚÎÄµµ/Ç°ÖÃ»ú/¶ÔÄÚ½Ó¿Ú/Ò»µãÍ£ÏßÏÂÏßÉÏÊı¾İÍ¬²½½Ó¿Ú.doc
+çº¿ä¸‹çº¿ä¸Šæ•°æ®åŒæ­¥æ¥å£ï¼ˆ12.26å¯ç”¨æ–°ipåœ°å€ï¼‰
+http://172.18.255.232:88/svn/AZP_ProdctrlArea/04ç ”å‘æ–‡æ¡£-äº§å“æ–‡ä»¶/07æ¥å£æ–‡æ¡£/01æˆ‘æ–¹æ¥å£æ–‡æ¡£/å‰ç½®æœº/å¯¹å†…æ¥å£/ä¸€ç‚¹åœçº¿ä¸‹çº¿ä¸Šæ•°æ®åŒæ­¥æ¥å£.doc
+
+http://172.18.40.7:18080/aomp/admin/loginTomanage.do?flag=admin æµ‹è¯•ç¯å¢ƒaomp admin 123456
+http://172.18.40.5:5002/#/month_ticket/bill æµ‹è¯•ç¯å¢ƒ pomp
+http://172.18.44.245:8092/vems/home.action å‡ºç§Ÿè½¦åœè½¦åœº æµ‹è¯•ç¯å¢ƒ vems admin 0.01ydt
+http://172.18.44.190/gim/nav.html dcm  æµ‹è¯•ç¯å¢ƒdcm yk 123456
