@@ -1,6 +1,16 @@
-10.10.44.105 root ake123
+POMP部署策略：
+10.10.44.105（172.18.30.5） root ake123
 /home/ake/workspace/park-parent
 ./package.sh
 ./deploy.sh
 /home/ake/app/tomcat-mgr/bin
 sh startup.sh
+
+前置机部署策略：
+10.10.44.105（172.18.30.5） root ake123
+#打包
+/home/ake/workspace/park-data-connector-parent
+./package.sh
+#部署
+/home/ake/app/park-data-connector-handler
+./fetch.sh
