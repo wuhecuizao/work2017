@@ -1,4 +1,4 @@
-﻿POMP部署策略：
+﻿1、POMP部署策略：
 10.10.44.105（172.18.30.5） root ake123
 /home/ake/workspace/park-parent
 ./package.sh
@@ -6,7 +6,7 @@
 /home/ake/app/tomcat-mgr/bin
 sh startup.sh
 
-前置机部署策略：
+2、前置机部署策略：
 10.10.44.105（172.18.30.5） root ake123
 #打包
 /home/ake/workspace/park-data-connector-parent
@@ -15,10 +15,32 @@ sh startup.sh
 /home/ake/app/park-data-connector-handler
 ./fetch.sh
 
-线下线上数据同步接口（12.26启用新ip地址）
+3、线下线上数据同步接口（12.26启用新ip地址）
 http://172.18.255.232:88/svn/AZP_ProdctrlArea/04研发文档-产品文件/07接口文档/01我方接口文档/前置机/对内接口/一点停线下线上数据同步接口.doc
 
 http://172.18.40.7:18080/aomp/admin/loginTomanage.do?flag=admin 测试环境aomp admin 123456
 http://172.18.40.5:5002/#/month_ticket/bill 测试环境 pomp
 http://172.18.44.245:8092/vems/home.action 出租车停车场 测试环境 vems admin 0.01ydt
 http://172.18.44.190/gim/nav.html dcm  测试环境dcm yk 123456
+
+
+4、开放平台相关
+YDTO 构建路径
+在10.10.44.105
+/home/ake/workspace/YDTO sh package.sh 打包
+在10.10.44.104
+/home/ake/app/tomcat-openydt/ sh fetch.sh 拉取并部署
+前端代码需要单独部署，目录在/home/ake/app/openydt-portal，只需要将前端npm run build，将dist文件夹中的文件拷贝至该目录下即可
+开放平台采取前后端分离部署方式，采用nginx（/usr/local/nginx1.9.9），配置文件在/usr/local/nginx1.9.9/conf/vhost/img.conf中。
+
+http://172.18.30.4:6800/#/Homepage 开放平台开发环境地址（代码在10.10.44.105，部署在10.10.44.104）
+10.10.44.104:2244
+Admin123
+
+
+5、罗凯(罗凯) 01-09 17:18:28
+https://devnew.yidianting.xin/mgr-weixin/h5/booking/index.html 开发环境h5的路径
+  
+  
+
+
