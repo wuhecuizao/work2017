@@ -40,6 +40,14 @@ Admin123
 
 5、罗凯(罗凯) 01-09 17:18:28
 https://devnew.yidianting.xin/mgr-weixin/h5/booking/index.html 开发环境h5的路径
+
+6、提测方法
+为代码打测试标签
+git tag -a V1.4.0.test1 -m 'V1.4.0.test1'
+git tag
+推送标签代码到master分支
+git push origin V1.4.0.test1
+
   
   
 
