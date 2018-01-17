@@ -1,0 +1,12 @@
+ 个人中心
+https://wxydt.yidianting.xin/weixin/html/uiHtml.do?otherwx=dy
+交停车费
+https://wxydt.yidianting.xin/weixin/html/uiHtml.do?act=car&otherwx=dy
+覆盖车场
+https://wxydt.yidianting.xin/weixin/index.html#/YdtParkingLot
+帮助中心
+https://wxydt.yidianting.xin/weixin/html/help.html?otherwx=dy
+好友推荐
+https://wxydt.yidianting.xin/weixin/html/shareFriend.do?otherwx=dy&invitedCode=null
+商户应用
+https://wxydt.yidianting.xin/mgr-weixin/passport/signin.do?otherwx=dy

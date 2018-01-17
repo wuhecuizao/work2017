@@ -1,0 +1,5 @@
+ALTER TABLE authz_operator ADD column `LOGO_IMG` varchar(200)  DEFAULT NULL COMMENT 'LOGO图片路径' after `IDENTI_KEY`;
+ALTER TABLE authz_operator ADD column `LOGIN_IMG` varchar(200)  DEFAULT NULL COMMENT '平台登录页图片路径' after `LOGO_IMG`;
+ALTER TABLE authz_operator ADD column `HOMEPAGE_IMG` varchar(200)  DEFAULT NULL COMMENT '登录后首页默认图片路径' after `LOGIN_IMG`;
+ALTER TABLE authz_operator ADD column `MERCHANT_LOGIN_IMG` varchar(200)  DEFAULT NULL COMMENT '商户端登录页默认图片路径' after `HOMEPAGE_IMG`;
+ALTER TABLE authz_operator ADD column `DECISION_LOGIN_IMG` varchar(200)  DEFAULT NULL COMMENT '决策端登录页默认图片路径' after `MERCHANT_LOGIN_IMG`;

@@ -1,0 +1,50 @@
+在场车辆（高风险）
+		FROM PARKING_RECORD po
+        JOIN PARKING_RECORD_EXTEND pe ON po.ID = pe.ID
+        JOIN PARKING_BILL pb ON pb.TOP_BILL_CODE = po.TOP_BILL_CODE
+        JOIN tbl_device_parking t ON t.pk_GlobalID = po.PARK_ID
+WHERE po.DATA_STATUS =1 AND po.LEAVE_TIME IS NULL
+
+离场记录（高风险）		
+from PARKING_RECORD pr 		
+		left join PARKING_BILL pb on pb.TOP_BILL_CODE=pr.TOP_BILL_CODE
+		left join PARKING_RECORD_EXTEND pe on pr.ID = pe.ID 
+		left join tbl_device_parking tdp on pr.PARK_ID=tdp.pk_GlobalID
+where pr.DATA_STATUS = 1 and pr.LEAVE_TYPE!=3 and pr.LEAVE_TYPE!=98
+
+收费流水（高风险）
+from PARKING_BILL_DETAIL pbd
+        left join PARKING_BILL pb ON pb.TOP_BILL_CODE=pbd.TOP_BILL_CODE
+        left join PARKING_RECORD pr ON pr.TOP_BILL_CODE=pbd.TOP_BILL_CODE
+        left join SCORE_RELIEF_RECORD srr ON pbd.BILL_CODE=srr.BILL_CODE
+        left join tbl_device_parking dp on dp.pk_GlobalID=pbd.PARK_ID
+where dp.STOP_CONNECT_PLATFORM=1
+
+异常进场（高风险）
+FROM PARKING_RECORD po
+        JOIN PARKING_RECORD_EXTEND pe ON po.ID = pe.ID
+        JOIN tbl_device_parking t ON t.pk_GlobalID = po.PARK_ID
+        WHERE po.DATA_STATUS =0
+		
+非系统开闸（中风险）
+from parking_abnormal_record par
+        INNER JOIN parking_abnormal_record_camera_detail parcd on par.PARKING_CODE=parcd.PARKING_CODE
+        INNER join tbl_device_parking dp on dp.pk_GlobalID=par.PARK_ID
+		
+异常放行（高风险）
+from PARKING_RECORD pr
+        left join PARKING_RECORD_EXTEND pre ON pr.ID=pre.ID
+        left join tbl_device_parking tdp on tdp.pk_GlobalID=pr.PARK_ID
+where pr.LEAVE_TYPE=3 or pr.LEAVE_TYPE=98
+
+欠费车辆（高风险）
+FROM parking_bill_arrear_record pbar
+        JOIN PARKING_RECORD pr ON pbar.TOP_BILL_CODE = pr.TOP_BILL_CODE
+        JOIN tbl_device_parking t ON t.pk_GlobalID = pr.PARK_ID
+		
+校正流水（高风险）
+from parking_car_code_modify_his as pccmh
+        left JOIN parking_record_camera_detail as prcd on pccmh.PARKING_RECORD_ID = prcd.PARKING_RECORD_ID
+        left JOIN parking_bill as pb on pb.PARKING_RECORD_ID = pccmh.PARKING_RECORD_ID
+        left JOIN parking_record as pr on pr.TOP_BILL_CODE = pb.TOP_BILL_CODE
+        left JOIN tbl_device_parking as tdp on pccmh.PARK_ID = tdp.pk_GlobalID
