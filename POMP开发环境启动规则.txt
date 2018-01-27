@@ -65,6 +65,7 @@ git push origin V1.4.0.test1
 二、涉及微信的预定h5、商户端前端代码也需更新至svn
 三、前置机代码提测
 四、pomp后端代码提测
+http://172.18.255.232:88/svn/ITS_Parking_Product/Parking/01_DvlpArea/03_Coding/01_Apps/Tags/OPERATOR/operator-management-platform/V2.1.0/V2.1.0.test03/src
 
 9、YDTO开放平台提测包含：
 一、开放平台前端代码build，dist推送至git
