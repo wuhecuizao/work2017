@@ -18,6 +18,10 @@ sh startup.sh
 3、线下线上数据同步接口（12.26启用新ip地址）
 http://172.18.255.232:88/svn/AZP_ProdctrlArea/04研发文档-产品文件/07接口文档/01我方接口文档/前置机/对内接口/一点停线下线上数据同步接口.doc
 
+
+http://172.18.100.1:8080/vems/home.action 开发环境vems admin 0.01ydt
+http://172.18.44.12/gim/nav.html 开发环境dcm yz 123456
+
 http://172.18.40.7:18080/aomp/admin/loginTomanage.do?flag=admin 测试环境aomp admin 123456
 http://172.18.40.5:5002/#/month_ticket/bill 测试环境 pomp
 http://172.18.44.245:8092/vems/home.action 出租车停车场 测试环境 vems admin 0.01ydt
@@ -54,7 +58,16 @@ git push origin V1.4.0.test1
 172.18.44.11
 刘备 123456
 
+  http://172.18.44.12/gim/nav.html  
   
-  
+8、pomp提测包含：
+一、pomp前端（git）build，替换svn上相关前端代码
+二、涉及微信的预定h5、商户端前端代码也需更新至svn
+三、前置机代码提测
+四、pomp后端代码提测
+
+9、YDTO开放平台提测包含：
+一、开放平台前端代码build，dist推送至git
+二、提测
 
 
