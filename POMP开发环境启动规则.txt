@@ -72,3 +72,13 @@ http://172.18.255.232:88/svn/ITS_Parking_Product/Parking/01_DvlpArea/03_Coding/0
 二、提测
 
 
+10、使用本机开发环境测试微信公众号预定h5的方法：
+1)OpenYdtRestClient.java
+private String OPENYDT_URL = "http://10.10.18.16:6789/openydt/api/v2/";
+2)config.properties
+#domain=https://devnew.yidianting.xin/mgr-weixin
+#weixin_forward_domain=https://devnew.yidianting.xin/mgr-weixin
+domain=http://10.10.18.16:8060/mgr-weixin
+weixin_forward_domain=http://10.10.18.16:8060/mgr-weixin
+
+
