@@ -98,3 +98,13 @@ domain=http://10.10.18.16:8060/mgr-weixin
 weixin_forward_domain=http://10.10.18.16:8060/mgr-weixin
 
 
+11、微信公众号、h5等开发、测试和生产环境的域名为：
+开发
+https://devnew.yidianting.xin/mgr-weixin/
+测试
+https://testdev.yidianting.xin/mgr-weixin/
+生产
+https://wxydt.yidianting.xin/mgr-weixin/
+
+
+
