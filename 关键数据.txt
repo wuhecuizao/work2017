@@ -512,7 +512,7 @@ insert into authz_resource (id,name,url,permission,from_system,type,ICON_STYLE,P
 (26205,'添加备注','#','REPORT:DATA_PUSH:ADD_REMARK',2,2,null,26200,3,4)
 
 
-==================================2.26年后==================================
+==================================年后2.26==================================
 CREATE TABLE `EMERGENCY_CONFIG` (
 	`ID` INT(11) NOT NULL AUTO_INCREMENT,
 	`CARRIER_ID` bigint(20) NOT NULL COMMENT '运营商ID',
@@ -526,16 +526,37 @@ CREATE TABLE `EMERGENCY_CONFIG` (
 	`LM_BLACKLIST_OUT` tinyint(4) NOT NULL DEFAULT '0' COMMENT '告警现场管理员--黑名单出场告警，0关闭，1开启',
 	`LM_REDLIST_IN` tinyint(4) NOT NULL DEFAULT '0' COMMENT '告警现场管理员--红名单进场告警，0关闭，1开启',
 	`LM_REDLIST_OUT` tinyint(4) NOT NULL DEFAULT '0' COMMENT '告警现场管理员--红名单出场告警，0关闭，1开启',
-	`LM_CARNO_IN` tinyint(4) NOT NULL DEFAULT '0' COMMENT '告警现场管理员--指定车牌进场告警，0关闭，1开启',
-	`LM_CARNO_OUT` tinyint(4) NOT NULL DEFAULT '0' COMMENT '告警现场管理员--指定车牌出场告警，0关闭，1开启',	
+	`LM_CARCODE_IN` tinyint(4) NOT NULL DEFAULT '0' COMMENT '告警现场管理员--指定车牌进场告警，0关闭，1开启',
+	`LM_CARCODE_OUT` tinyint(4) NOT NULL DEFAULT '0' COMMENT '告警现场管理员--指定车牌出场告警，0关闭，1开启',	
 	`CREATE_BY` varchar(20) COLLATE utf8_bin DEFAULT NULL COMMENT '创建人',
-   `CREATE_TIME` datetime DEFAULT NULL COMMENT '创建时间',
-   `UPDATE_BY` varchar(20) COLLATE utf8_bin DEFAULT NULL COMMENT '修改人',
-   `UPDATE_TIME` datetime DEFAULT NULL COMMENT '修改时间',
+    `CREATE_TIME` datetime DEFAULT NULL COMMENT '创建时间',
+    `UPDATE_BY` varchar(20) COLLATE utf8_bin DEFAULT NULL COMMENT '修改人',
+    `UPDATE_TIME` datetime DEFAULT NULL COMMENT '修改时间',
 	PRIMARY KEY (`id`),
 	KEY `INDEX_CARRIER_ID` (`CARRIER_ID`)
 )
 ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='告警设置表';
+
+CREATE TABLE `EMERGENCY_DETAIL` (
+	`ID` INT(11) NOT NULL AUTO_INCREMENT,
+    `EM_TITLE` varchar(50) NOT NULL COMMENT '告警标题',
+    `EM_MSG` varchar(60) NOT NULL COMMENT '告警内容',
+    `CREATE_TIME` datetime DEFAULT NULL COMMENT '创建时间',
+	PRIMARY KEY (`id`)
+)
+ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='告警记录表';
+
+CREATE TABLE `PARTICULAR_CARNO_EMERGENCY_CONFIG` (
+	`ID` INT(11) NOT NULL AUTO_INCREMENT,
+    `CAR_CODE` varchar(30) DEFAULT NULL COMMENT '车牌号',
+    `MOBILE` varchar(11) NOT NULL COMMENT '车主电话',
+    `CREATE_BY` varchar(20) COLLATE utf8_bin DEFAULT NULL COMMENT '添加人',
+    `CREATE_TIME` datetime DEFAULT NULL COMMENT '添加时间',
+	PRIMARY KEY (`id`),
+	KEY `INDEX_CAR_CODE` (`CAR_CODE`)
+)
+ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='指定车牌告警配置表';
+
 
 
 
