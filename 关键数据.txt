@@ -1,0 +1,547 @@
+from 罗凯 远程数据库信息
+jdbc_url=jdbc:mysql://drdsbcgw923d6nr4public.drds.aliyuncs.com:3306/dev_park?characterEncoding=utf-8
+jdbc_username=dev_park
+jdbc_password=lyJSEL1KypjpWIOeUjwq
+
+命令行访问数据库的方式：mysql -h drdsbcgw923d6nr4public.drds.aliyuncs.com -u dev_park -p
+
+drdsbcgw923d6nr4public.drds.aliyuncs.com
+
+
+SELECT po.ID,
+			po.TOP_BILL_CODE,
+		    po.CAR_CODE,
+		    po.ENTER_CARD_CODE,
+		    po.ENTER_TIME,
+		    po.ENTER_CHANNEL_NAME,
+		    po.ENTER_TYPE,
+		    t.name,
+		    po.CONFIDENCE,
+		    po.ENTER_VIP_TYPE, 
+		    po.ENTER_CUSTOM_VIP_NAME, 
+		    pe.RECORD_TYPE, 
+		    pe.IS_CORRECT, 
+		    pb.PARKING_RECORD_ID AS  pk_GlobalId
+		FROM PARKING_RECORD po 
+		JOIN PARKING_RECORD_EXTEND pe ON po.ID = pe.ID 
+		JOIN PARKING_BILL pb ON pb.TOP_BILL_CODE = po.TOP_BILL_CODE 
+		JOIN tbl_device_parking t ON t.pk_GlobalID = po.PARK_ID 
+		WHERE po.DATA_STATUS =1 
+		AND po.LEAVE_TIME IS NULL
+		ORDER BY po.ENTER_TIME DESC
+		limit 0,10
+		
+SELECT po.ID,
+			po.TOP_BILL_CODE,
+		    po.CAR_CODE,
+		    po.ENTER_CARD_CODE,
+		    po.ENTER_TIME,
+		    po.ENTER_CHANNEL_NAME,
+		    po.ENTER_TYPE,
+            po.CAR_CODE,
+			par.ENTER_TYPE
+		FROM PARKING_RECORD po 
+		JOIN parking_abnormal_record par ON po.CAR_CODE = par.CAR_CODE
+		WHERE po.DATA_STATUS =1 
+		AND po.LEAVE_TIME IS NULL
+		ORDER BY po.ENTER_TIME DESC
+		limit 0,10
+		
+select DATA_STATUS, count(1) from parking_record group by parking_record.DATA_STATUS
+
+#非常耗时，谨慎使用
+SELECT count(1) 
+        FROM PARKING_RECORD po 
+        JOIN PARKING_RECORD_EXTEND pe ON po.ID = pe.ID 
+        WHERE po.DATA_STATUS =1 
+        AND po.LEAVE_TIME IS NULL
+		
+		
+		
+		
+异常进场
+abnormal-in-car
+异常放行
+abnormal-out-car
+非系统开闸
+park-abnormal-open-gate-car
+收费流水
+payment-record
+欠费车辆
+park-arrear-car
+异常拍照
+park-abnormal-pic-car
+校正流水
+adjust-car-record
+
+
+
+当前数据库未找到字段：
+异常进场：进场说明、进场凭证、异常类型、触发类型、计费区域
+
+异常放行：进场凭证、计算系数、放行操作员（不明确是否是parking_record_extend的字段`OUT_OPERATOR_NAME` varchar(20) DEFAULT NULL COMMENT '放出操作员名'）、
+放行时间（不明确是否是parking_record_extend的字段`OUT_OPERATOR_TIME` datetime DEFAULT NULL COMMENT '放出操作时间'）、
+匹配状态（不明确是否是parking_record_extend的字段`IS_MANUAL_MATCH` tinyint(4) DEFAULT NULL COMMENT '是否手动匹配（0否，1是）'）、
+计费区域（不明确是否是parking_record_extend的字段`LEAVE_STATISTICAL_AREA` varchar(100) DEFAULT NULL COMMENT '离场统计区域,用于统计（中括号包裹区域序号逗号分个，如[2],[6]）'）、
+是否人工干预、干预类型
+
+欠费车辆：补缴时间（parking_bill_arrear_record字段`TOLL_COLLECTOR_TIME` datetime DEFAULT NULL COMMENT '收费时间'）
+
+异常拍照（需vems团队提供接口）：车牌照片、车牌号、停车场名称、拍照时间、通道类型、通道名称
+
+校正流水（缺少表tlb_operation_parkingout_present）：操作后车牌、操作前车牌、机器识别车牌、车牌照片、停车场名称、校正来源、校正类型、操作记录类型、操作员、操作时间
+
+非系统开闸：数据库没有用来表征开闸的字段
+
+
+
+select * from authz_resource where id>=21000 and id<21400
+
+
+
+insert into authz_resource (id,name,url,permission,from_system,type,ICON_STYLE,PARENT_ID,`LEVEL`,ORDER_VAL) values 
+(21400,'异常进场','/operation/abnormal_in_car','PARKING_OPERATION:ABNORMAL_IN_CAR',2,1,null,21000,2,4),
+(21401,'页面查看','#','PARKING_OPERATION:ABNORMAL_IN_CAR:LIST',2,2,null,21400,3,0),
+(21402,'导出','#','PARKING_OPERATION:ABNORMAL_IN_CAR:EXPORT',2,2,null,21400,3,1),
+(21500,'异常放行','/operation/abnormal_out_car','PARKING_OPERATION:ABNORMAL_OUT_CAR',2,1,null,21000,2,5),
+(21501,'页面查看','#','PARKING_OPERATION:ABNORMAL_OUT_CAR:LIST',2,2,null,21500,3,0),
+(21502,'导出','#','PARKING_OPERATION:ABNORMAL_OUT_CAR:EXPORT',2,2,null,21500,3,1),
+
+(21600,'非系统开闸','/operation/park_abnormal_open_gate_car','PARKING_OPERATION:PARK_ABNORMAL_OPEN_GATE_CAR',2,1,null,21000,2,6),
+(21601,'页面查看','#','PARKING_OPERATION:PARK_ABNORMAL_OPEN_GATE_CAR:LIST',2,2,null,21600,3,0),
+(21602,'导出','#','PARKING_OPERATION:PARK_ABNORMAL_OPEN_GATE_CAR:EXPORT',2,2,null,21600,3,1),
+
+(21700,'欠费车辆','/operation/park_arrear_car','PARKING_OPERATION:PARK_ARREAR_CAR',2,1,null,21000,2,7),
+(21701,'页面查看','#','PARKING_OPERATION:PARK_ARREAR_CAR:LIST',2,2,null,21700,3,0),
+(21702,'导出','#','PARKING_OPERATION:PARK_ARREAR_CAR:EXPORT',2,2,null,21700,3,1),
+
+(21800,'异常拍照','/operation/park_abnormal_pic_car','PARKING_OPERATION:PARK_ABNORMAL_PIC_CAR',2,1,null,21000,2,8),
+(21801,'页面查看','#','PARKING_OPERATION:PARK_ABNORMAL_PIC_CAR:LIST',2,2,null,21800,3,0),
+(21802,'导出','#','PARKING_OPERATION:PARK_ABNORMAL_PIC_CAR:EXPORT',2,2,null,21800,3,1),
+
+(21900,'校正流水','/operation/adjust_car_record','PARKING_OPERATION:ADJUST_CAR_RECORD',2,1,null,21000,2,9),
+(21901,'页面查看','#','PARKING_OPERATION:ADJUST_CAR_RECORD:LIST',2,2,null,21900,3,0),
+(21902,'导出','#','PARKING_OPERATION:ADJUST_CAR_RECORD:EXPORT',2,2,null,21900,3,1)
+
+
+
+非常耗时1000s+
+select
+        pbd.ID,
+        pbd.TOP_BILL_CODE,
+        pbd.PARK_ID,
+        pr.CAR_CODE,
+        pr.ENTER_CARD_CODE,
+        tdp.name as PARK_NAME,
+        pr.ENTER_TIME,
+        pr.ENTER_CHANNEL_NAME,
+        pr.ENTER_CAR_CODE,
+        pr.LEAVE_TIME,
+        pr.LEAVE_CHANNEL_NAME,
+        pr.ENTER_CUSTOM_VIP_NAME,
+        pbd.SHOULD_VALUE,
+        pbd.RELIEF_VALUE,
+        pbd.REAL_VALUE,
+        srr.RELIEF_VALUE,
+        pre.OUT_OPERATOR_NAME,
+        pre.OUT_OPERATOR_TIME,
+        pre.IS_MANUAL_MATCH
+        from PARKING_RECORD pr
+        inner join PARKING_BILL_DETAIL pbd ON pr.TOP_BILL_CODE=pbd.TOP_BILL_CODE
+        left join PARKING_RECORD_EXTEND pre ON pr.ID=pre.ID
+        left join SCORE_RELIEF_RECORD srr ON pbd.BILL_CODE=srr.BILL_CODE
+        left join tbl_device_parking tdp on tdp.pk_GlobalID=pbd.PARK_ID
+limit 0,10
+
+
+车辆信息
+PARK_CUSTOMER_CAR
+黑名单
+PARK_BLACKLIST
+访客车辆
+PARK_VISITORLIST
+
+insert into authz_resource (id,name,url,permission,from_system,type,ICON_STYLE,PARENT_ID,`LEVEL`,ORDER_VAL) values 
+(32000,'车辆管理','#','PARK_CAR',2,1,null,3000,2,2),
+(32100,'车辆信息','/park/park_customer_car','PARK_CAR:PARK_CUSTOMER_CAR',2,1,null,32000,3,0),
+(32101,'页面查看','#','PARK_CAR:PARK_CUSTOMER_CAR:LIST',2,2,null,32100,4,0),
+(32102,'导出','#','PARK_CAR:PARK_CUSTOMER_CAR:EXPORT',2,2,null,32100,4,1),
+(32103,'新增','#','PARK_CAR:PARK_CUSTOMER_CAR:SAVE',2,2,null,32100,4,2),
+(32104,'删除','#','PARK_CAR:PARK_CUSTOMER_CAR:DEL',2,2,null,32100,4,3),
+(32105,'导入','#','PARK_CAR:PARK_CUSTOMER_CAR:INPORT',2,2,null,32100,4,4),
+(32200,'黑名单','/park/park_blacklist','PARK_CAR:PARK_BLACKLIST',2,1,null,32000,3,0),
+(32201,'页面查看','#','PARK_CAR:PARK_BLACKLIST:LIST',2,2,null,32200,4,0),
+(32202,'导出','#','PARK_CAR:PARK_BLACKLIST:EXPORT',2,2,null,32200,4,1),
+(32203,'新增','#','PARK_CAR:PARK_BLACKLIST:SAVE',2,2,null,32200,4,2),
+(32204,'删除','#','PARK_CAR:PARK_BLACKLIST:DEL',2,2,null,32200,4,3),
+(32300,'访客车辆','/park/park_visitorlist','PARK_CAR:PARK_VISITORLIST',2,1,null,32000,3,0),
+(32301,'页面查看','#','PARK_CAR:PARK_VISITORLIST:LIST',2,2,null,32300,4,0),
+(32302,'导出','#','PARK_CAR:PARK_VISITORLIST:EXPORT',2,2,null,32300,4,1),
+(32303,'新增','#','PARK_CAR:PARK_VISITORLIST:SAVE',2,2,null,32300,4,2),
+(32304,'删除','#','PARK_CAR:PARK_VISITORLIST:DEL',2,2,null,32300,4,3),
+
+(22500,'车主信息','/park_vip/park_customer','PARKVIP:PARK_CUSTOMER',2,1,null,22000,2,5),
+(22501,'页面查看','#','PARKVIP:PARK_CUSTOMER:LIST',2,2,null,22500,3,0),
+(22502,'导出','#','PARKVIP:PARK_CUSTOMER:EXPORT',2,2,null,22500,3,1),
+(22503,'新增','#','PARKVIP:PARK_CUSTOMER:SAVE',2,2,null,22500,3,2),
+(22504,'删除','#','PARKVIP:PARK_CUSTOMER:DEL',2,2,null,22500,3,3),
+(22505,'导入','#','PARKVIP:PARK_CUSTOMER:INPORT',2,2,null,22500,3,4),
+
+
+CREATE TABLE `PARK_VISITORLIST` (
+  `ID` bigint(20) NOT NULL AUTO_INCREMENT,
+  `CAR_LICENSE_NUMBER` VARCHAR(50) DEFAULT NULL COMMENT '车牌',
+  `OWNER` VARCHAR(50) DEFAULT NULL COMMENT '车主姓名',
+  `OWNER_PHONE` VARCHAR(50) DEFAULT NULL COMMENT '电话',
+  `CAR_CARD_NUMBER` VARCHAR(50) DEFAULT NULL COMMENT '卡号',
+  `ADD_BY` VARCHAR(32) DEFAULT NULL COMMENT '添加人',
+  `ADD_TIME` DATETIME DEFAULT NULL COMMENT '添加时间',
+  `OPERATE_BY` VARCHAR(32) DEFAULT NULL COMMENT '最近操作人',
+  `OPERATE_TIME` DATETIME DEFAULT NULL COMMENT '最近操作时间',
+  `REMARK1` VARCHAR(200) DEFAULT NULL COMMENT '备注1',
+  `REMARK2` VARCHAR(200) DEFAULT NULL COMMENT '备注2',
+  `REMARK3` VARCHAR(200) DEFAULT NULL COMMENT '备注3',
+  `TIMEPERIOD_LIST` VARCHAR(200) DEFAULT NULL COMMENT '有效时段',
+  `VISIT_REASON` VARCHAR(200) DEFAULT NULL COMMENT '来访原因',
+  `IS_DELETED` TINYINT(1) DEFAULT '0' COMMENT '是否逻辑删除（0未删除，1删除）',
+  PRIMARY KEY (`ID`)
+) ENGINE=INNODB DEFAULT CHARSET=UTF8 COMMENT='访客车辆表';
+
+CREATE TABLE `PARK_VISITORLIST_PARK` (
+  `ID` bigint(20) NOT NULL AUTO_INCREMENT,
+  `PARK_VISITORLIST_ID` bigint(20) NOT NULL COMMENT '访客车辆ID',
+  `PARK_ID` varchar(50) COLLATE utf8_bin NOT NULL COMMENT '停车场UUID',
+  `PARK_VIP_TYPE_ID` bigint(20) NOT NULL COMMENT '停车场VIP类型ID',
+  PRIMARY KEY (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='访客车辆停车场关系表';
+
+CREATE TABLE `PARK_VISITORLIST_PARK_SEND_STATUS` (
+  `ID` bigint(20) NOT NULL AUTO_INCREMENT,
+  `PARK_VISITORLIST_ID` bigint(20) NOT NULL COMMENT '访客车辆ID',
+  `CREATE_TIME` datetime NOT NULL COMMENT '生成时间',
+  `PARK_ID` varchar(50) COLLATE utf8_bin NOT NULL COMMENT '停车场UUID',
+  `PARK_VIP_TYPE_ID` bigint(20) NOT NULL COMMENT '停车场VIP类型ID',
+  `SEND_STATUS` tinyint(4) NOT NULL COMMENT '发送状态 0未发送，1发送中，2发送成功，3发送失败',
+  `SEND_TIME` datetime DEFAULT NULL COMMENT '发送时间',
+  `SEND_TIMES` int(11) DEFAULT NULL COMMENT '发送次数',
+  `RESP_TIME` datetime DEFAULT NULL COMMENT '响应时间',
+  `RESP_DESC` varchar(200) COLLATE utf8_bin DEFAULT NULL COMMENT '响应描述信息',
+  PRIMARY KEY (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='访客发送状态表';
+
+
+insert into PARK_CUSTOMER_CAR (
+PARK_CUSTOMER_CAR.CARRIER_ID,
+PARK_CUSTOMER_CAR.PARK_CUSTOMER_ID,
+PARK_CUSTOMER_CAR.CAR_LICENSE_NUMBER,
+PARK_CUSTOMER_CAR.CAR_LICENSE_COLOR,
+PARK_CUSTOMER_CAR.CAR_LICENSE_TYPE,
+PARK_CUSTOMER_CAR.CAR_COLOR,
+PARK_CUSTOMER_CAR.CAR_LOGO,
+PARK_CUSTOMER_CAR.CAR_MODEL,
+PARK_CUSTOMER_CAR.CAR_FULL_PICTURE,
+PARK_CUSTOMER_CAR.CAR_TYPE,
+PARK_CUSTOMER_CAR.CAR_OWN_TYPE,
+PARK_CUSTOMER_CAR.ADD_TIME,
+PARK_CUSTOMER_CAR.ADD_BY,
+PARK_CUSTOMER_CAR.MODIFY_TIME,
+PARK_CUSTOMER_CAR.MODIFY_BY,
+PARK_CUSTOMER_CAR.CAR_SIZE_TYPE,
+PARK_CUSTOMER_CAR.DRIVING_LICENSE_PICTURE,
+PARK_CUSTOMER_CAR.IS_DELETED,
+PARK_CUSTOMER_CAR.SIMILAR_PLATES,
+PARK_CUSTOMER_CAR.CAR_CARD_NUMBER)
+values 
+(6,1,'粤A12345',1,1,1,1,'雪佛兰XXX',null,1,1,'2017-11-16 00:00:00','user1','2017-11-16 00:00:00','user1',1,1,0,null,'13800000000')
+
+
+insert into PARK_CUSTOMER (
+PARK_CUSTOMER.CARRIER_ID,
+PARK_CUSTOMER.CUSTOMER_NAME,
+PARK_CUSTOMER.CUSTOMER_SEX,
+PARK_CUSTOMER.CUSTOMER_TELPHONE,
+PARK_CUSTOMER.CAR_NUMBER,
+PARK_CUSTOMER.CARPORT_NUMBER,
+PARK_CUSTOMER.CARPORT_AVAILABLE_NUMBER,
+PARK_CUSTOMER.PERMISSION_MODE,
+PARK_CUSTOMER.CUSTOMER_ROLE,
+PARK_CUSTOMER.DEFAULT_CAR_LICENSE,
+PARK_CUSTOMER.DEFAULT_CARD,
+PARK_CUSTOMER.CUSTOMER_STATUS,
+PARK_CUSTOMER.ADD_TIME,
+PARK_CUSTOMER.ADD_BY,
+PARK_CUSTOMER.DYNAMIC_MODE_STATUS,
+PARK_CUSTOMER.CUSTOMER_COMPANY,
+PARK_CUSTOMER.CUSTOMER_DEPARTMENT,
+PARK_CUSTOMER.CUSTOMER_ADDRESS)
+VALUES
+(6,'test001',1,'13800000000',1,1,1,0,0,'粤A12345','13800000000',1,'2017-11-16 00:00:00','user1',0,'ake','互联网研发部','瀚天科技城')
+
+
+insert into PARK_BLACKLIST(
+PARK_BLACKLIST.CAR_LICENSE_NUMBER,
+PARK_BLACKLIST.`OWNER`,
+PARK_BLACKLIST.CAR_CARD_NUMBER,
+PARK_BLACKLIST.BLACKLIST_TYPE,
+PARK_BLACKLIST.ESCAPE_TOTAL_AMOUNT,
+PARK_BLACKLIST.ESCAPE_TIMES,
+PARK_BLACKLIST.LAST_ESCAPE_TIME,
+PARK_BLACKLIST.ADD_BY,
+PARK_BLACKLIST.ADD_TIME,
+PARK_BLACKLIST.OPERATE_BY,
+PARK_BLACKLIST.OPERATE_TIME,
+PARK_BLACKLIST.BLACKLIST_FOREVER_FLAG,
+PARK_BLACKLIST.REASON,
+PARK_BLACKLIST.REMARK1,
+PARK_BLACKLIST.REMARK2,
+PARK_BLACKLIST.TIMEPERIOD_LIST,
+PARK_BLACKLIST.IS_DELETED) VALUES
+('粤BUKS45','李四','13600000000',1,1000,30,'2017-11-17 09:08:08','user1','2017-11-17 09:10:08','user1','2017-11-17 09:10:08',0,'欠费次数超过30次',null,null,'2017-11-17 09:10:08,2017-12-17 09:10:08',0)
+
+insert into PARK_VISITORLIST (
+PARK_VISITORLIST.CAR_LICENSE_NUMBER,
+PARK_VISITORLIST.`OWNER`,
+PARK_VISITORLIST.OWNER_PHONE,
+PARK_VISITORLIST.CAR_CARD_NUMBER,
+PARK_VISITORLIST.ADD_BY,
+PARK_VISITORLIST.ADD_TIME,
+PARK_VISITORLIST.OPERATE_BY,
+PARK_VISITORLIST.OPERATE_TIME,
+PARK_VISITORLIST.REMARK1,
+PARK_VISITORLIST.REMARK2,
+PARK_VISITORLIST.REMARK3,
+PARK_VISITORLIST.TIMEPERIOD_LIST,
+PARK_VISITORLIST.VISIT_REASON,
+PARK_VISITORLIST.IS_DELETED) VALUES
+('粤A89756','王二麻子','15700000000','15700000000','user1','2017-11-20 09:10:08','user1','2017-11-20 12:10:08',
+'备注1','备注2','备注3','2017-11-20 08:10:08 2017-11-20 08:50:08','临时来访',0),
+('粤A45678','二麻子','15800000000','15800000000','user1','2017-11-19 09:10:08','user1','2017-11-19 12:10:08',
+'备注1','备注2','备注3','2017-11-19 08:10:08 2017-11-19 08:50:08','临时来访',0)
+
+
+insert into PARK_BLACKLIST_PARK (PARK_BLACKLIST_ID,PARK_ID,PARK_VIP_TYPE_ID) VALUES
+(1,'4688ff5a-b71b-4779-a479-44a360a8567f', 170),
+(2,'4688ff5a-b71b-4779-a479-44a360a8567f', 503)
+
+ALTER TABLE PARK_VISITORLIST MODIFY `ID` bigint(20) NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE PARK_BLACKLIST ADD column 'SOURCE_PARKUUID' varchar(50) DEFAULT NULL COMMENT '添加黑名单的车场UUID';
+
+console.log('i am item');
+console.log(event);
+
+http://172.18.40.7:18080/aomp/admin/loginTomanage.do?flag=admin 测试环境aomp admin 123456
+http://172.18.40.5:5002/#/month_ticket/bill 测试环境 pomp
+http://172.18.44.245:8092/vems/home.action 出租车停车场 测试环境 vems admin 0.01ydt
+http://172.18.44.190/gim/nav.html dcm  测试环境dcm yk 123456
+
+#######################################################################################################################
+####2017.12.21 发票相关
+以下为废弃：
+===========废弃开始===============
+(25100,'发票申请流水','/user_invoice/invoice_apply','USER_INVOICE:INVOICE_APPLY',2,1,null,25000,3,0),
+(25101,'页面查看','#','USER_INVOICE:INVOICE_APPLY:LIST',2,2,null,25100,4,0),
+(25102,'导出','#','USER_INVOICE:INVOICE_APPLY:EXPORT',2,2,null,25100,4,1),
+(25103,'审核开票','#','USER_INVOICE:INVOICE_APPLY:REVIEW',2,2,null,25100,4,2),
+(25200,'电子发票流水','/user_invoice/invoice','USER_INVOICE:INVOICE',2,1,null,25000,3,0),
+(25201,'页面查看','#','USER_INVOICE:INVOICE:LIST',2,2,null,25200,4,0),
+(25202,'导出','#','USER_INVOICE:INVOICE:EXPORT',2,2,null,25200,4,1),
+(25203,'作废','#','USER_INVOICE:INVOICE:CANCEL',2,2,null,25200,4,2),
+(25204,'冲红','#','USER_INVOICE:INVOICE:FLUSH_RED',2,2,null,25200,4,2),
+(25205,'重新开票','#','USER_INVOICE:INVOICE:REOPEN',2,2,null,25200,4,2),
+============废弃结束==============
+#######################################################################################################################
+insert into authz_resource (id,name,url,permission,from_system,type,ICON_STYLE,PARENT_ID,`LEVEL`,ORDER_VAL) values 
+(25000,'发票管理','#','USER_INVOICE',2,1,null,null,1,12),
+(25100,'电子发票报表','/user_invoice/invoice_form','USER_INVOICE:INVOICE_FORM',2,1,null,25000,3,0),
+(25101,'页面查看','#','USER_INVOICE:INVOICE_FORM:LIST',2,2,null,25100,4,0),
+(25102,'导出','#','USER_INVOICE:INVOICE_FORM:EXPORT',2,2,null,25100,4,1),
+
+(2600,'LOGO设置','/authz/logo_config','PLATFORM:LOGOCONFIG',2,1,null,2000,2,5),
+(2601,'页面查看','#','PLATFORM:LOGOCONFIG:LIST',2,2,null,2600,3,0),
+(2602,'编辑','#','PLATFORM:LOGOCONFIG:EDIT',2,2,null,2600,3,1),
+
+
+
+
+##对表authz_operator添加五个字段用于标示图片路径
+ALTER TABLE authz_operator ADD column `LOGO_IMG` varchar(100)  DEFAULT NULL COMMENT 'LOGO图片路径' after `IDENTI_KEY`;
+ALTER TABLE authz_operator ADD column `LOGIN_IMG` varchar(100)  DEFAULT NULL COMMENT '平台登录页图片路径' after `LOGO_IMG`;
+ALTER TABLE authz_operator ADD column `HOMEPAGE_IMG` varchar(100)  DEFAULT NULL COMMENT '登录后首页默认图片路径' after `LOGIN_IMG`;
+ALTER TABLE authz_operator ADD column `MERCHANT_LOGIN_IMG` varchar(100)  DEFAULT NULL COMMENT '商户端登录页默认图片路径' after `HOMEPAGE_IMG`;
+ALTER TABLE authz_operator ADD column `DECISION_LOGIN_IMG` varchar(100)  DEFAULT NULL COMMENT '决策端登录页默认图片路径' after `MERCHANT_LOGIN_IMG`;
+
+CREATE TABLE `INVOICE_DAILY_REPORT` (
+	`ID` BIGINT(20) NOT NULL AUTO_INCREMENT,
+	`YEAR` INT(11) NULL DEFAULT NULL COMMENT '统计年度',
+	`YM` VARCHAR(10) NULL DEFAULT NULL COMMENT '统计年月',
+	`STAT_DATE` VARCHAR(10) NOT NULL COMMENT '统计时间',
+	`PARK_ID` varchar(50) NOT NULL COMMENT '停车场UUID',
+	`BILL_COUNT` BIGINT(20) NOT NULL COMMENT '交易流水总数量',
+	`INVOICE_COUNT` BIGINT(20) NOT NULL COMMENT '开票流水次数',
+	`INVOICE_TOTAL` DECIMAL(12,4) NOT NULL COMMENT '开票流水总金额',
+	`CREATE_TIME` DATETIME NULL DEFAULT NULL COMMENT '创建时间',
+	`CREATE_BY` VARCHAR(32) NULL DEFAULT NULL COMMENT '创建人',
+	`UPDATE_TIME` DATETIME NULL DEFAULT NULL COMMENT '修改时间',
+	`UPDATE_BY` VARCHAR(32) NULL DEFAULT NULL COMMENT '修改人',
+	PRIMARY KEY (`ID`),
+	INDEX `INDEX_STAT_DATE_PARK_ID` (`STAT_DATE`, `PARK_ID`)
+)
+COMMENT='pomp发票统计报表'
+ENGINE=InnoDB
+DEFAULT CHARSET=utf8
+;
+
+ALTER TABLE INVOICE_DAILY_REPORT MODIFY `STAT_DATE` date NOT NULL COMMENT '统计日期'
+
+
+##创建表预定日报表
+CREATE TABLE `BOOKING_DAILY_REPORT` (
+	`ID` BIGINT(20) NOT NULL AUTO_INCREMENT,
+	`YEAR` INT(11) NULL DEFAULT NULL COMMENT '统计年度',
+	`YM` VARCHAR(10) NULL DEFAULT NULL COMMENT '统计年月',
+	`STAT_DATE` DATE NOT NULL COMMENT '统计日期',
+	`PARK_ID` BIGINT(20) NOT NULL DEFAULT '0' COMMENT '停车场ID',
+	`PARK_NAME` VARCHAR(128) NOT NULL DEFAULT '' COMMENT '停车场名称',
+	`SERVICE_FEE` DECIMAL(12,4) NOT NULL COMMENT '预订服务费',
+	`PARKING_FEE` DECIMAL(12,4) NOT NULL COMMENT '预订停车费',
+	`REFUND_SERVICE_FEE` DECIMAL(12,4) NOT NULL COMMENT '预订服务费（退款）',
+	`REFUND_PARKING_FEE` DECIMAL(12,4) NOT NULL COMMENT '预订停车费（退款）',
+	`BOOKING_COUNT` INT(11) NOT NULL COMMENT '预定数量',
+	`CANCEL_COUNT` INT(11) NOT NULL COMMENT '取消数量',
+	`REFUND_COUNT` INT(11) NOT NULL COMMENT '退款数量',
+	`CREATE_TIME` DATETIME NULL DEFAULT NULL,
+	`CREATE_BY` VARCHAR(32) NULL DEFAULT NULL,
+	`UPDATE_TIME` DATETIME NULL DEFAULT NULL,
+	`UPDATE_BY` VARCHAR(32) NULL DEFAULT NULL,
+	PRIMARY KEY (`ID`),
+	INDEX `INDEX_STAT_DATE_PARK_ID` (`STAT_DATE`, `PARK_ID`)
+)
+ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='预定车位统计报表';
+
+insert into authz_resource (id,name,url,permission,from_system,type,ICON_STYLE,PARENT_ID,`LEVEL`,ORDER_VAL) values 
+(20320,'预订报表','/booking/booking_form','MGR:SHARE:BOOKING_FORM',2,1,'share',20000,2,4),
+(20321,'页面查看','#','MGR:SHARE:BOOKING_FORM:LIST',2,2,null,20320,3,0),
+(20322,'导出','#','MGR:SHARE:BOOKING_FORM:EXPORT',2,2,null,20320,3,1)
+
+商户端（shanghu）logo设置已完成，需改变相应文件：login.html ake.css
+
+pomp V1.7.2.test1 sql文件有误需更改：
+(20310, '预订订单流水', '/booking/booking_record', 'MGR:SHARE:BOOKING_RECORD', 2, 1, 'share', 20000, 2, 3);
+改为：
+(20310, '预订订单流水', '/booking/booking_record', 'MGR:SHARE:BOOKING_RECORD', 2, 1, 'share', 20000, 2, 3),
+pomp 前置机 V1.7.2.test1 内文件错误放置开放平台代码包
+
+============================================需求v1.4.3开始======================================================================================================
+1、pomp的config.properties添加，需要对应相应环境（开发、测试、生产）
+#url for open invoice
+open_invoice_url=https://devnew.yidianting.xin/weixin/html/invoice.do
+
+2、
+CREATE TABLE `PAY_MODE_DAILY_REPORT` (
+	`ID` BIGINT(20) NOT NULL AUTO_INCREMENT,
+	`YEAR` INT(11) NULL DEFAULT NULL COMMENT '统计年度',
+	`YM` VARCHAR(10) NULL DEFAULT NULL COMMENT '统计年月',
+	`STAT_DATE` DATE NOT NULL COMMENT '统计日期',
+	`PARK_UUID` VARCHAR(50) NOT NULL COMMENT '停车场UUID',
+	`PAY_MODE` tinyint(4) NOT NULL COMMENT '支付方式0未知1现金2自发卡3次数4微信支付5支付宝支付6银联闪付7交通卡8免费9账户余额10银联接触卡11银联网络支付12第三方余额13NFC14普通储蓄卡15信用卡16微信免密17支付宝免密18腾讯无感支付19ETC20手动转账',
+	`PAY_COUNT` BIGINT(20) NOT NULL COMMENT '支付次数',
+	`PAY_TOTAL` DECIMAL(12,4) NOT NULL COMMENT '支付金额总数（元）',
+	`CREATE_TIME` DATETIME NULL DEFAULT NULL COMMENT '创建时间',
+	`CREATE_BY` VARCHAR(32) NULL DEFAULT NULL COMMENT '创建人',
+	`UPDATE_TIME` DATETIME NULL DEFAULT NULL COMMENT '修改时间',
+	`UPDATE_BY` VARCHAR(32) NULL DEFAULT NULL COMMENT '修改人',
+	PRIMARY KEY (`ID`),
+	INDEX `INDEX_STAT_DATE_PARK_UUID` (`STAT_DATE`, `PARK_UUID`)
+)
+COMMENT='支付方式统计报表'
+DEFAULT CHARSET=utf8
+ENGINE=InnoDB
+;
+
+insert into authz_resource (id,name,url,permission,from_system,type,ICON_STYLE,PARENT_ID,`LEVEL`,ORDER_VAL) values 
+(26100,'支付方式明细报表','/report/pay_mode','REPORT:PAY_MODE',2,1,null,5000,2,12),
+(26101,'页面查看','#','REPORT:PAY_MODE:LIST',2,2,null,26100,3,0),
+(26102,'导出','#','REPORT:PAY_MODE:EXPORT',2,2,null,26100,3,1)
+
+DATA_PUSH_USER_DETAIL 数据推送详情
+DATA_PUSH_USER_BINDING_REPORT 用户与报表关联表 用户需确认是哪个用户，应该是user
+
+CREATE TABLE `DATA_PUSH_USER_DETAIL` (
+	`ID` BIGINT(20) NOT NULL AUTO_INCREMENT,
+	`USER_ID` bigint(20) NOT NULL COMMENT '用户id',
+	`WEIXIN_ID` VARCHAR(32) NULL DEFAULT NULL COMMENT '微信id',
+	`REMARK` VARCHAR(50) DEFAULT NULL COMMENT '备注',
+	`DELETED` tinyint(1) DEFAULT '0' COMMENT '是否逻辑删除（0未删除，1删除）',
+	`CREATE_TIME` DATETIME NULL DEFAULT NULL COMMENT '创建时间',
+	`CREATE_BY` VARCHAR(32) NULL DEFAULT NULL COMMENT '创建人',
+	`UPDATE_TIME` DATETIME NULL DEFAULT NULL COMMENT '修改时间',
+	`UPDATE_BY` VARCHAR(32) NULL DEFAULT NULL COMMENT '修改人',
+	PRIMARY KEY (`ID`),
+	INDEX `INDEX_WEIXIN_ID` (`WEIXIN_ID`)
+)
+COMMENT='数据推送详情'
+DEFAULT CHARSET=utf8
+ENGINE=InnoDB
+;
+
+CREATE TABLE `DATA_PUSH_USER_BINDING_REPORTS` (
+  `ID` bigint(20) NOT NULL AUTO_INCREMENT,
+  `DATA_PUSH_USER_ID` bigint(20) NOT NULL COMMENT '数据推送详情ID',
+  `REPORT_ID` bigint(20) NOT NULL COMMENT '数据推送--报表情况ID，DATA_PUSH_REPORTS的ID',
+  PRIMARY KEY (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='数据推送--用户报表关联表';
+
+CREATE TABLE `DATA_PUSH_REPORTS` (
+  `ID` bigint(20) NOT NULL AUTO_INCREMENT,
+  `NAME` VARCHAR(64) NOT NULL COMMENT '报表名称',
+  `URL` VARCHAR(256) NOT NULL COMMENT '报表链接地址',
+  `CREATE_TIME` DATETIME NULL DEFAULT NULL COMMENT '创建时间',
+  `CREATE_BY` VARCHAR(32) NULL DEFAULT NULL COMMENT '创建人',
+  `UPDATE_TIME` DATETIME NULL DEFAULT NULL COMMENT '修改时间',
+  `UPDATE_BY` VARCHAR(32) NULL DEFAULT NULL COMMENT '修改人',
+  PRIMARY KEY (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='数据推送--报表情况';
+
+insert into authz_resource (id,name,url,permission,from_system,type,ICON_STYLE,PARENT_ID,`LEVEL`,ORDER_VAL) values 
+(26200,'数据推送','/report/data_push','REPORT:DATA_PUSH',2,1,null,5000,2,13),
+(26201,'页面查看','#','REPORT:DATA_PUSH:LIST',2,2,null,26200,3,0),
+(26202,'导出','#','REPORT:DATA_PUSH:EXPORT',2,2,null,26200,3,1),
+(26203,'添加','#','REPORT:DATA_PUSH:ADD',2,2,null,26200,3,2),
+(26204,'删除','#','REPORT:DATA_PUSH:DELETE',2,2,null,26200,3,3),
+(26205,'添加备注','#','REPORT:DATA_PUSH:ADD_REMARK',2,2,null,26200,3,4)
+
+
+==================================2.26年后==================================
+CREATE TABLE `EMERGENCY_CONFIG` (
+	`ID` INT(11) NOT NULL AUTO_INCREMENT,
+	`CARRIER_ID` bigint(20) NOT NULL COMMENT '运营商ID',
+	`BLACKLIST_IN` tinyint(4) NOT NULL DEFAULT '0' COMMENT '黑名单进场告警，0关闭，1开启',
+	`BLACKLIST_OUT` tinyint(4) NOT NULL DEFAULT '0' COMMENT '黑名单出场告警，0关闭，1开启',
+	`REDLIST_IN` tinyint(4) NOT NULL DEFAULT '0' COMMENT '红名单进场告警，0关闭，1开启',
+	`REDLIST_OUT` tinyint(4) NOT NULL DEFAULT '0' COMMENT '红名单出场告警，0关闭，1开启',
+	`CARNO_IN` tinyint(4) NOT NULL DEFAULT '0' COMMENT '指定车牌进场告警，0关闭，1开启',
+	`CARNO_OUT` tinyint(4) NOT NULL DEFAULT '0' COMMENT '指定车牌出场告警，0关闭，1开启',	
+	`LM_BLACKLIST_IN` tinyint(4) NOT NULL DEFAULT '0' COMMENT '告警现场管理员--黑名单进场告警，0关闭，1开启',
+	`LM_BLACKLIST_OUT` tinyint(4) NOT NULL DEFAULT '0' COMMENT '告警现场管理员--黑名单出场告警，0关闭，1开启',
+	`LM_REDLIST_IN` tinyint(4) NOT NULL DEFAULT '0' COMMENT '告警现场管理员--红名单进场告警，0关闭，1开启',
+	`LM_REDLIST_OUT` tinyint(4) NOT NULL DEFAULT '0' COMMENT '告警现场管理员--红名单出场告警，0关闭，1开启',
+	`LM_CARNO_IN` tinyint(4) NOT NULL DEFAULT '0' COMMENT '告警现场管理员--指定车牌进场告警，0关闭，1开启',
+	`LM_CARNO_OUT` tinyint(4) NOT NULL DEFAULT '0' COMMENT '告警现场管理员--指定车牌出场告警，0关闭，1开启',	
+	`CREATE_BY` varchar(20) COLLATE utf8_bin DEFAULT NULL COMMENT '创建人',
+   `CREATE_TIME` datetime DEFAULT NULL COMMENT '创建时间',
+   `UPDATE_BY` varchar(20) COLLATE utf8_bin DEFAULT NULL COMMENT '修改人',
+   `UPDATE_TIME` datetime DEFAULT NULL COMMENT '修改时间',
+	PRIMARY KEY (`id`),
+	KEY `INDEX_CARRIER_ID` (`CARRIER_ID`)
+)
+ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='告警设置表';
+
+
+
+
+
+
+
+
+

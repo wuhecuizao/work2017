@@ -106,5 +106,12 @@ https://testdev.yidianting.xin/mgr-weixin/
 生产
 https://wxydt.yidianting.xin/mgr-weixin/
 
-
-
+12、URL编码与解码
+解码：http://10.30.173.149:18283/wankeheading/api/servicedata={"carCode":"粤EMR101","cmd":"getUserCredits","coopId":19,"key":"mss8dp","parkCode":"2KM58VWB","phone":"18200946810"}
+http://10.30.173.149:18283/wankeheading/api/servicedata=%7B %22 carCode %22 %3A %22 %E7%B2%A4 EMR101 %22 %2C %22 cmd %22 %3A%22getUserCredits%22%2C%22coopId%22%3A19%2C%22key%22%3A%22mss8dp%22%2C%22parkCode%22%3A%222KM58VWB%22%2C%22phone%22%3A%2218200946810%22%7D
+几个重要的转换（记住）：
+{  %7B
+"  %22
+:  %3A
+,  %2C
+}  %7D
