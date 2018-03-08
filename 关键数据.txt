@@ -470,6 +470,8 @@ DATA_PUSH_USER_BINDING_REPORT 用户与报表关联表 用户需确认是哪个�
 CREATE TABLE `DATA_PUSH_USER_DETAIL` (
 	`ID` BIGINT(20) NOT NULL AUTO_INCREMENT,
 	`USER_ID` bigint(20) NOT NULL COMMENT '用户id',
+	`CARRIER_ID` bigint(11) DEFAULT NULL COMMENT '运营商ID',
+	`OPEN_ID` VARCHAR(50) NULL DEFAULT NULL COMMENT 'open id',
 	`WEIXIN_ID` VARCHAR(32) NULL DEFAULT NULL COMMENT '微信id',
 	`REMARK` VARCHAR(50) DEFAULT NULL COMMENT '备注',
 	`DELETED` tinyint(1) DEFAULT '0' COMMENT '是否逻辑删除（0未删除，1删除）',
@@ -537,8 +539,11 @@ CREATE TABLE `EMERGENCY_CONFIG` (
 )
 ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='告警设置表';
 
-CREATE TABLE `EMERGENCY_DETAIL` (
+CREATE TABLE `EMERGENCY_RECORD` (
 	`ID` INT(11) NOT NULL AUTO_INCREMENT,
+	`CARRIER_ID` bigint(20) NOT NULL COMMENT '运营商ID',	
+    `PARK_ID` BIGINT(20) NOT NULL DEFAULT '0' COMMENT '停车场ID',
+	`EM_TYPE` tinyint(4) NOT NULL DEFAULT '0' COMMENT '告警类型，0黑名单进场，1黑名单出场，2红名单进场，3红名单出场，4指定车牌进场，5指定车牌出场，6告警现场管理员--黑名单进场,7告警现场管理员--黑名单出场,8告警现场管理员--红名单进场,9告警现场管理员--红名单出场,10告警现场管理员--指定车牌进场,11告警现场管理员--指定车牌出场',
     `EM_TITLE` varchar(50) NOT NULL COMMENT '告警标题',
     `EM_MSG` varchar(60) NOT NULL COMMENT '告警内容',
     `CREATE_TIME` datetime DEFAULT NULL COMMENT '创建时间',
@@ -546,20 +551,29 @@ CREATE TABLE `EMERGENCY_DETAIL` (
 )
 ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='告警记录表';
 
-CREATE TABLE `EMERGENCY_PARTICULAR_CARCODE_CONFIG` (
-	`ID` INT(11) NOT NULL AUTO_INCREMENT,
-    `CAR_CODE` varchar(30) DEFAULT NULL COMMENT '车牌号',
-    `MOBILE` varchar(11) NOT NULL COMMENT '车主电话',
-    `CREATE_BY` varchar(20) COLLATE utf8_bin DEFAULT NULL COMMENT '添加人',
-    `CREATE_TIME` datetime DEFAULT NULL COMMENT '添加时间',
-	`UPDATE_BY` varchar(20) COLLATE utf8_bin DEFAULT NULL COMMENT '修改人',
-    `UPDATE_TIME` datetime DEFAULT NULL COMMENT '修改时间',
-	PRIMARY KEY (`id`),
-	KEY `INDEX_CAR_CODE` (`CAR_CODE`) USING BTREE
-)
-ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='指定车牌告警设置表';
+CREATE TABLE `EMERGENCY_CARNO` (
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `CARRIER_ID` bigint(20) NOT NULL COMMENT '运营商ID',
+  `CAR_CODE` varchar(30) NOT NULL DEFAULT '' COMMENT '车牌号',
+  `MOBILE` varchar(11) NOT NULL DEFAULT '' COMMENT '车主电话',
+  `CREATE_BY_ID` bigint(20) NOT NULL COMMENT '添加人ID',
+  `CREATE_TIME` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '添加时间',
+  `UPDATE_BY_ID` bigint(20) DEFAULT NULL COMMENT '修改人ID',
+  `UPDATE_TIME` datetime DEFAULT NULL COMMENT '修改时间',
+  PRIMARY KEY (`ID`),
+  UNIQUE KEY `INDEX_CARRIER_ID_CAR_CODE` (`CARRIER_ID`,`CAR_CODE`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='指定车牌告警设置表';
+
+insert into authz_resource (id,name,url,permission,from_system,type,ICON_STYLE,PARENT_ID,`LEVEL`,ORDER_VAL) values 
+(3500,'指定车牌提醒','/park/emergency_carno','PARK_EMERGENCY_CARNO',2,1,null,3000,2,5),
+(3600,'告警记录','/park/emergency_detail','PARK_EMERGENCY_DETAIL',2,1,null,3000,2,6),
+(3700,'告警设置','/park/emergency_config','PARK_EMERGENCY_CONFIG',2,1,null,3000,2,7)
 
 
+####因跨过2级，修改电子发票报表层级结构
+update authz_resource set LEVEL=2 where id=25100;
+update authz_resource set LEVEL=3 where id=25101;
+update authz_resource set LEVEL=3 where id=25102;
 
 
 

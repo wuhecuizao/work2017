@@ -16,6 +16,7 @@ sh startup.sh
 ./fetch.sh
 /home/ake/app/park-data-connector-front
 ./fetch.sh
+可使用ps -ef|grep park查看两个客户端的运行状况
 
 3、线下线上数据同步接口（12.26启用新ip地址）
 http://172.18.255.232:88/svn/AZP_ProdctrlArea/04研发文档-产品文件/07接口文档/01我方接口文档/前置机/对内接口/一点停线下线上数据同步接口.doc
@@ -115,3 +116,51 @@ http://10.30.173.149:18283/wankeheading/api/servicedata=%7B %22 carCode %22 %3A 
 :  %3A
 ,  %2C
 }  %7D
+
+13、2018.3.5
+“生产环境数据”切换到开发环境
+drds bigdata test
+mysql -h118.190.72.220 -P33069 -upark -p
+库名 park 用户 park 密码1k2BRkhvGfr8kgPntk
+
+原始：
+jdbc_url=jdbc:mysql://drdsbcgw923d6nr4public.drds.aliyuncs.com/dev_park?characterEncoding=utf-8
+jdbc_username=dev_park
+jdbc_password=lyJSEL1KypjpWIOeUjwq
+
+切换的数据库：
+jdbc_url=jdbc:mysql://118.190.72.220:33069/park?characterEncoding=utf-8
+jdbc_username=park
+jdbc_password=1k2BRkhvGfr8kgPntk
+
+
+
+ln -s /home/ake/app/park-data-connector-front/conf/ conf
+rm -rf conf
+
+14、极光推送 - 测试(不区分开发、测试、生产环境), 用户名: ydt@akeparking.com, 密码： ake_ydt_jpush
+
+15、https://wxydt.yidianting.xin 生产环境数据
+    https://devnew.yidianting.xin 开发环境
+
+16、EXPLAIN detail SELECT
+        par.ID,
+        par.PARK_ID,
+        par.CAR_CODE,
+        par.CARD_CODE,
+        dp.name,
+        par.ENTER_TIME,
+        par.OUTER_TIME,
+        par.RECORD_TYPE,
+        par.ENTER_ADDRESS,
+        par.OUTER_ADDRESS,
+        par.SHOULD_CHARGE_VALUE,
+        par.REAL_CHARGE_VALUE,
+        par.RELIEF_CHARGE_VALUE,
+        par.OPERATE_TIME,
+        par.PARKING_CODE,
+        IF(par.RECORD_TYPE=1,par.ENTER_TIME,par.OUTER_TIME) AS IN_OUT_TIME
+        FROM parking_abnormal_record par
+        LEFT JOIN tbl_device_parking dp ON dp.pk_GlobalID=par.PARK_ID
+ORDER BY UPDATE_TIME DESC
+LIMIT 10
