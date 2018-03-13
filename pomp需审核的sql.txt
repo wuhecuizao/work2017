@@ -1,0 +1,55 @@
+1、非系统开闸 list
+select a.*,dp.name from
+        (select
+        par.ID,
+        par.PARK_ID,
+        par.CAR_CODE,
+        par.CARD_CODE,
+        par.ENTER_TIME,
+        par.OUTER_TIME,
+        par.RECORD_TYPE,
+        par.ENTER_ADDRESS,
+        par.OUTER_ADDRESS,
+        par.SHOULD_CHARGE_VALUE,
+        par.REAL_CHARGE_VALUE,
+        par.RELIEF_CHARGE_VALUE,
+        par.OPERATE_TIME,
+        par.PARKING_CODE,
+        IF(par.RECORD_TYPE=1,par.ENTER_TIME,par.OUTER_TIME) AS IN_OUT_TIME
+        from parking_abnormal_record par
+        <where>
+            <if test="carCode!=null and carCode!=''">
+                AND par.CAR_CODE like CONCAT('%',#{carCode},'%')
+            </if>
+            <if test="cardCode!=null and cardCode!=''">
+                AND par.CARD_CODE like CONCAT('%',#{cardCode},'%')
+            </if>
+            <if test="timeFrom!=null and timeTo!=null ">
+                AND ((par.ENTER_TIME &gt;= #{timeFrom} AND par.ENTER_TIME &lt;= #{timeTo}) OR (par.OUTER_TIME &gt;=
+                #{timeFrom} AND par.OUTER_TIME &lt;= #{timeTo}))
+            </if>
+            <if test="channelName!='' and channelName!=null">
+                AND par.ENTER_ADDRESS like CONCAT('%',#{channelName},'%') OR par.OUTER_ADDRESS like
+                CONCAT('%',#{channelName},'%')
+            </if>
+            <if test="recordType!='' and recordType!=null">
+                AND par.RECORD_TYPE = #{recordType}
+            </if>
+            <if test="parkId!=null and parkId!=''">
+                AND par.PARK_ID = #{parkId}
+            </if>
+            <if test="parkIds!=null and parkIds!=''">
+                AND par.PARK_ID IN (${parkIds})
+            </if>
+        </where>
+        order by UPDATE_TIME DESC
+        <if test="limitStart != null and limitEnd > 0">
+            limit ${limitStart}, ${limitEnd}
+        </if>
+        ) as a
+        LEFT join tbl_device_parking dp on dp.pk_GlobalID=a.PARK_ID
+        <where>
+            <if test="parkName!=null and parkName!=''">
+                AND dp.name like CONCAT('%',#{parkName},'%')
+            </if>
+        </where>

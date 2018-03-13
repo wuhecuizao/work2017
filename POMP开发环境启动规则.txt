@@ -44,6 +44,12 @@ http://172.18.30.4:6800/#/Homepage 开放平台开发环境地址（代码在10.
 10.10.44.104:2244
 Admin123
 
+查看开发环境日志：
+cd /home/ake/app/park-data-connector-handler/1.8.0.beta/logs
+tail -f tail -f connector-server-handler.log
+cd /home/ake/app/park-data-connector-front/1.8.0.beta/logs
+tail -f connector-server-front.log
+
 
 5、罗凯(罗凯) 01-09 17:18:28
 https://devnew.yidianting.xin/mgr-weixin/h5/booking/index.html 开发环境h5的路径
@@ -164,3 +170,10 @@ rm -rf conf
         LEFT JOIN tbl_device_parking dp ON dp.pk_GlobalID=par.PARK_ID
 ORDER BY UPDATE_TIME DESC
 LIMIT 10
+
+17、http://127.0.0.1:5002/mgr/emergency/test.do
+
+18、nginx启动配置规则
+启动 /usr/local/nginx1.9.9/sbin/nginx -c /usr/local/nginx1.9.9/conf/nginx.conf
+ps aux|grep nginx
+ll /proc/5764

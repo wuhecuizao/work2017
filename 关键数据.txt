@@ -509,35 +509,35 @@ insert into authz_resource (id,name,url,permission,from_system,type,ICON_STYLE,P
 (26200,'数据推送','/report/data_push','REPORT:DATA_PUSH',2,1,null,5000,2,13),
 (26201,'页面查看','#','REPORT:DATA_PUSH:LIST',2,2,null,26200,3,0),
 (26202,'导出','#','REPORT:DATA_PUSH:EXPORT',2,2,null,26200,3,1),
-(26203,'添加','#','REPORT:DATA_PUSH:ADD',2,2,null,26200,3,2),
-(26204,'删除','#','REPORT:DATA_PUSH:DELETE',2,2,null,26200,3,3),
-(26205,'添加备注','#','REPORT:DATA_PUSH:ADD_REMARK',2,2,null,26200,3,4)
+(26203,'添加推送人员','#','REPORT:DATA_PUSH:ADD',2,2,null,26200,3,2),
+(26204,'删除绑定关系','#','REPORT:DATA_PUSH:DELETE',2,2,null,26200,3,3),
+(26205,'添加备注','#','REPORT:DATA_PUSH:ADD_REMARK',2,2,null,26200,3,4),
+(26206,'绑定','#','REPORT:DATA_PUSH:BIND',2,2,null,26200,3,5)
 
 
 ==================================年后2.26==================================
 CREATE TABLE `EMERGENCY_CONFIG` (
-	`ID` INT(11) NOT NULL AUTO_INCREMENT,
-	`CARRIER_ID` bigint(20) NOT NULL COMMENT '运营商ID',
-	`BLACKLIST_IN` tinyint(4) NOT NULL DEFAULT '0' COMMENT '黑名单进场告警，0关闭，1开启',
-	`BLACKLIST_OUT` tinyint(4) NOT NULL DEFAULT '0' COMMENT '黑名单出场告警，0关闭，1开启',
-	`REDLIST_IN` tinyint(4) NOT NULL DEFAULT '0' COMMENT '红名单进场告警，0关闭，1开启',
-	`REDLIST_OUT` tinyint(4) NOT NULL DEFAULT '0' COMMENT '红名单出场告警，0关闭，1开启',
-	`CARNO_IN` tinyint(4) NOT NULL DEFAULT '0' COMMENT '指定车牌进场告警，0关闭，1开启',
-	`CARNO_OUT` tinyint(4) NOT NULL DEFAULT '0' COMMENT '指定车牌出场告警，0关闭，1开启',	
-	`LM_BLACKLIST_IN` tinyint(4) NOT NULL DEFAULT '0' COMMENT '告警现场管理员--黑名单进场告警，0关闭，1开启',
-	`LM_BLACKLIST_OUT` tinyint(4) NOT NULL DEFAULT '0' COMMENT '告警现场管理员--黑名单出场告警，0关闭，1开启',
-	`LM_REDLIST_IN` tinyint(4) NOT NULL DEFAULT '0' COMMENT '告警现场管理员--红名单进场告警，0关闭，1开启',
-	`LM_REDLIST_OUT` tinyint(4) NOT NULL DEFAULT '0' COMMENT '告警现场管理员--红名单出场告警，0关闭，1开启',
-	`LM_CARCODE_IN` tinyint(4) NOT NULL DEFAULT '0' COMMENT '告警现场管理员--指定车牌进场告警，0关闭，1开启',
-	`LM_CARCODE_OUT` tinyint(4) NOT NULL DEFAULT '0' COMMENT '告警现场管理员--指定车牌出场告警，0关闭，1开启',	
-	`CREATE_BY` varchar(20) COLLATE utf8_bin DEFAULT NULL COMMENT '创建人',
-    `CREATE_TIME` datetime DEFAULT NULL COMMENT '创建时间',
-    `UPDATE_BY` varchar(20) COLLATE utf8_bin DEFAULT NULL COMMENT '修改人',
-    `UPDATE_TIME` datetime DEFAULT NULL COMMENT '修改时间',
-	PRIMARY KEY (`id`),
-	KEY `INDEX_CARRIER_ID` (`CARRIER_ID`)
-)
-ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='告警设置表';
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `CARRIER_ID` bigint(20) NOT NULL COMMENT '运营商ID',
+  `BLACKLIST_IN` tinyint(1) NOT NULL DEFAULT '0' COMMENT '黑名单进场告警，0关闭，1开启',
+  `BLACKLIST_OUT` tinyint(1) NOT NULL DEFAULT '0' COMMENT '黑名单出场告警，0关闭，1开启',
+  `REDLIST_IN` tinyint(1) NOT NULL DEFAULT '0' COMMENT '红名单进场告警，0关闭，1开启',
+  `REDLIST_OUT` tinyint(1) NOT NULL DEFAULT '0' COMMENT '红名单出场告警，0关闭，1开启',
+  `CARNO_IN` tinyint(1) NOT NULL DEFAULT '0' COMMENT '指定车牌进场告警，0关闭，1开启',
+  `CARNO_OUT` tinyint(1) NOT NULL DEFAULT '0' COMMENT '指定车牌出场告警，0关闭，1开启',
+  `LM_BLACKLIST_IN` tinyint(1) NOT NULL DEFAULT '0' COMMENT '告警现场管理员--黑名单进场告警，0关闭，1开启',
+  `LM_BLACKLIST_OUT` tinyint(1) NOT NULL DEFAULT '0' COMMENT '告警现场管理员--黑名单出场告警，0关闭，1开启',
+  `LM_REDLIST_IN` tinyint(1) NOT NULL DEFAULT '0' COMMENT '告警现场管理员--红名单进场告警，0关闭，1开启',
+  `LM_REDLIST_OUT` tinyint(1) NOT NULL DEFAULT '0' COMMENT '告警现场管理员--红名单出场告警，0关闭，1开启',
+  `LM_CARCODE_IN` tinyint(1) NOT NULL DEFAULT '0' COMMENT '告警现场管理员--指定车牌进场告警，0关闭，1开启',
+  `LM_CARCODE_OUT` tinyint(1) NOT NULL DEFAULT '0' COMMENT '告警现场管理员--指定车牌出场告警，0关闭，1开启',
+  `CREATE_BY` varchar(20) NOT NULL COMMENT '创建人',
+  `CREATE_TIME` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `UPDATE_BY` varchar(20) DEFAULT NULL COMMENT '修改人',
+  `UPDATE_TIME` datetime DEFAULT NULL COMMENT '修改时间',
+  PRIMARY KEY (`ID`),
+  UNIQUE KEY `INDEX_CARRIER_ID` (`CARRIER_ID`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='告警设置表';
 
 CREATE TABLE `EMERGENCY_RECORD` (
 	`ID` INT(11) NOT NULL AUTO_INCREMENT,
@@ -546,7 +546,7 @@ CREATE TABLE `EMERGENCY_RECORD` (
 	`EM_TYPE` tinyint(4) NOT NULL DEFAULT '0' COMMENT '告警类型，0黑名单进场，1黑名单出场，2红名单进场，3红名单出场，4指定车牌进场，5指定车牌出场，6告警现场管理员--黑名单进场,7告警现场管理员--黑名单出场,8告警现场管理员--红名单进场,9告警现场管理员--红名单出场,10告警现场管理员--指定车牌进场,11告警现场管理员--指定车牌出场',
     `EM_TITLE` varchar(50) NOT NULL COMMENT '告警标题',
     `EM_MSG` varchar(60) NOT NULL COMMENT '告警内容',
-    `CREATE_TIME` datetime DEFAULT NULL COMMENT '创建时间',
+    `CREATE_TIME` datetime DEFAULT NULL COMMENT '告警时间',
 	PRIMARY KEY (`id`)
 )
 ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='告警记录表';
@@ -566,14 +566,29 @@ CREATE TABLE `EMERGENCY_CARNO` (
 
 insert into authz_resource (id,name,url,permission,from_system,type,ICON_STYLE,PARENT_ID,`LEVEL`,ORDER_VAL) values 
 (3500,'指定车牌提醒','/park/emergency_carno','PARK_EMERGENCY_CARNO',2,1,null,3000,2,5),
-(3600,'告警记录','/park/emergency_detail','PARK_EMERGENCY_DETAIL',2,1,null,3000,2,6),
-(3700,'告警设置','/park/emergency_config','PARK_EMERGENCY_CONFIG',2,1,null,3000,2,7)
+(3600,'告警记录','/park/emergency_record','PARK_EMERGENCY_RECORD',2,1,null,3000,2,6),
+(3700,'告警设置','/park/emergency_config','PARK_EMERGENCY_CONFIG',2,1,null,3000,2,7);
+
+INSERT INTO authz_resource (ID, NAME, URL, PERMISSION, FROM_SYSTEM, `TYPE`, ICON_STYLE, PARENT_ID, `LEVEL`, ORDER_VAL) VALUES
+(3501, '页面查看', '#', 'PARK_EMERGENCY_CARNO:LIST', 2, 2, null, 3500, 3, 0),
+(3502, '新增', '#', 'PARK_EMERGENCY_CARNO:NEW', 2, 2, null, 3500, 3, 0),
+(3503, '修改', '#', 'PARK_EMERGENCY_CARNO:UPDATE', 2, 2, null, 3500, 3, 0),
+(3504, '删除', '#', 'PARK_EMERGENCY_CARNO:DELETE', 2, 2, null, 3500, 3, 0),
+(3505, '导出', '#', 'PARK_EMERGENCY_CARNO:EXPORT', 2, 2, null, 3500, 3, 0),
+(3601, '页面查看', '#', 'PARK_EMERGENCY_RECORD:LIST', 2, 2, null, 3600, 3, 0),
+(3602, '导出', '#', 'PARK_EMERGENCY_RECORD:EXPORT', 2, 2, null, 3600, 3, 0);
 
 
 ####因跨过2级，修改电子发票报表层级结构
 update authz_resource set LEVEL=2 where id=25100;
 update authz_resource set LEVEL=3 where id=25101;
 update authz_resource set LEVEL=3 where id=25102;
+
+##注意nginx加入
+proxy_set_header Upgrade $http_upgrade;
+proxy_set_header Connection "upgrade";
+
+
 
 
 
