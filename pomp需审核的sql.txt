@@ -1,3 +1,4 @@
+进出管理中，非系统开闸、异常进场、异常放行、欠费车辆、校正流水、异常拍照做了sql更改
 1、非系统开闸 list
 select a.*,dp.name from
         (select
@@ -53,3 +54,311 @@ select a.*,dp.name from
                 AND dp.name like CONCAT('%',#{parkName},'%')
             </if>
         </where>
+
+2、异常进场
+select b.*, t.name from(
+        select a.*, pe.IS_CORRECT from(
+        SELECT
+        po.ID,
+        po.TOP_BILL_CODE,
+        po.CAR_CODE,
+        po.ENTER_CARD_CODE,
+        po.ENTER_TIME,
+        po.ENTER_CHANNEL_NAME,
+        po.ENTER_VIP_TYPE,
+        po.ENTER_CUSTOM_VIP_NAME,
+        po.PARK_ID
+        FROM PARKING_RECORD po
+        WHERE po.DATA_STATUS =0
+        <if test="carCode != null">
+            AND po.CAR_CODE like CONCAT('%',#{carCode},'%')
+        </if>
+        <if test="enterCardCode != null">
+            AND po.ENTER_CARD_CODE like CONCAT('%',#{enterCardCode},'%')
+        </if>
+        <if test="enterTimeFrom != null and enterTimeTo != null">
+            AND po.ENTER_TIME &gt;#{enterTimeFrom}
+            AND po.ENTER_TIME &lt;#{enterTimeTo}
+        </if>
+        <if test="vipType != null and vipType != 'temp_car'">
+            AND po.ENTER_CUSTOM_VIP_NAME like CONCAT('%',#{vipType},'%')
+        </if>
+        <!-- 当页面输入临时车时转化为 如下条件-->
+        <if test="vipType != null and vipType == 'temp_car'">
+            AND po.ENTER_VIP_TYPE = 1
+        </if>
+        <if test="enterChannelName != null">
+            AND po.ENTER_CHANNEL_NAME like CONCAT('%',#{enterChannelName},'%')
+        </if>
+        <if test="parkId!=null and parkId!=''">
+            AND po.PARK_ID = #{parkId}
+        </if>
+        <if test="parkIds!=null and parkIds!=''">
+            AND po.PARK_ID IN (${parkIds})
+        </if>
+        ORDER BY po.ENTER_TIME DESC
+        <if test="limitStart != null and limitEnd > 0">
+            limit ${limitStart}, ${limitEnd}
+        </if>
+        )as a
+        left JOIN PARKING_RECORD_EXTEND pe ON a.ID = pe.ID
+        <where>
+            <if test="isCorrect != null">
+                AND pe.IS_CORRECT = #{isCorrect}
+            </if>
+        </where>
+        )as b
+        left JOIN tbl_device_parking t ON t.pk_GlobalID = b.PARK_ID
+3、异常放行
+select b.*,tdp.name as PARK_NAME
+from
+(select a.*,
+pre.LEAVE_CUSTOM_VIP_NAME,
+pre.OUT_OPERATOR_NAME,
+pre.OUT_OPERATOR_TIME,
+pre.IS_MANUAL_MATCH,
+pre.IS_CORRECT,
+pre.ABNORMAL_OUT_REASON
+from
+(select
+        pr.ID,
+        pr.TOP_BILL_CODE,
+        pr.PARK_ID,
+        pr.CAR_CODE,
+        pr.ENTER_CARD_CODE,        
+        pr.ENTER_TIME,
+        pr.ENTER_CHANNEL_NAME,
+        pr.ENTER_CAR_CODE,
+        pr.LEAVE_TIME,
+        pr.LEAVE_CHANNEL_NAME,
+        pr.LEAVE_VIP_TYPE,        
+        pr.ENTER_TYPE        
+        from PARKING_RECORD pr
+<where>
+            (pr.LEAVE_TYPE=3 or pr.LEAVE_TYPE=98)
+            <if test="carCode != null">
+                AND pr.CAR_CODE like CONCAT('%',#{carCode},'%')
+            </if>
+            <if test="enterCardCode != null">
+                AND pr.ENTER_CARD_CODE like CONCAT('%',#{enterCardCode},'%')
+            </if>
+            <if test="leaveTimeFrom!=null and leaveTimeTo != null and leaveTimeFrom !='' and leaveTimeTo!=''">
+                AND pr.LEAVE_TIME &gt;= #{leaveTimeFrom} AND pr.LEAVE_TIME &lt;= #{leaveTimeTo}
+            </if>
+            <if test="leaveChannelName != '' and leaveChannelName != null">
+                AND pr.LEAVE_CHANNEL_NAME like CONCAT('%',#{leaveChannelName},'%')
+            </if>
+						<!-- 当页面输入临时车时转化为 如下条件-->
+            <if test="vipType != null and vipType == 'temp_car'">
+                AND pr.LEAVE_VIP_TYPE = 1
+            </if>
+            <if test="parkId != null and parkId != ''">
+                AND pr.PARK_ID = #{parkId}
+            </if>
+            <if test="parkIds!=null and parkIds!=''">
+                AND pr.PARK_ID IN (${parkIds})
+            </if>
+        </where>
+        order by pr.LEAVE_TIME DESC
+        <if test="limitStart != null and limitEnd > 0">
+            limit ${limitStart}, ${limitEnd}
+        </if>
+)as a
+left join PARKING_RECORD_EXTEND pre ON a.ID=pre.ID
+<where>
+						<if test="manualMatch != null">
+                AND pre.IS_MANUAL_MATCH = #{manualMatch}
+            </if>
+            <if test="isCorrect != null">
+                AND pre.IS_CORRECT = #{isCorrect}
+            </if>            
+            <if test="vipType != null and vipType != 'temp_car'">
+                AND pre.LEAVE_CUSTOM_VIP_NAME like CONCAT('%',#{vipType},'%')
+            </if>            
+            <if test="outOperatorName != '' and outOperatorName != null">
+                AND pre.OUT_OPERATOR_NAME like CONCAT('%',#{outOperatorName},'%')
+            </if>
+            <if test="outOperatorTimeFrom != null and outOperatorTimeTo != null and outOperatorTimeFrom !='' and outOperatorTimeTo!=''">
+                AND pre.OUT_OPERATOR_TIME &gt;= #{outOperatorTimeFrom} AND pre.OUT_OPERATOR_TIME &lt;=
+                #{outOperatorTimeTo}
+            </if>
+</where>
+)as b
+left join tbl_device_parking tdp on tdp.pk_GlobalID=b.PARK_ID
+
+4、欠费车辆
+select b.* ,t.name as park_name from
+(select a.* ,pr.ENTER_TIME,
+        pr.ENTER_CAR_CODE,
+        pr.LEAVE_TIME,
+        pr.LEAVE_CAR_CODE,
+        pr.PARK_ID  from
+(SELECT
+        pbar.ID,
+        pbar.TOP_BILL_CODE,
+        pbar.CAR_CODE,
+        pbar.CARD_CODE,        
+        pbar.TOTAL_VALUE,
+        pbar.PAID_COUPON_VALUE,
+        pbar.PAID_REAL_VALUE,
+        pbar.ARREAR_COUPON_VALUE,
+        pbar.ARREAR_REAL_VALUE,
+        pbar.BACK_REAL_VALUE,
+        pbar.IS_BACK_PAY,
+        pbar.TOLL_COLLECTOR_NAME,
+        pbar.PARK_NAME as paid_park_name,
+        pbar.TOLL_COLLECTOR_TIME,
+        pbar.ARREAR_STATUS
+        FROM parking_bill_arrear_record pbar
+				<where>            
+            <if test="carCode != null">
+                AND pbar.CAR_CODE like CONCAT('%',#{carCode},'%')
+            </if>
+            <if test="cardCode != null">
+                AND pbar.CARD_CODE like CONCAT('%',#{cardCode},'%')
+            </if>            
+            <if test="tollCollectorTimeFrom != null and tollCollectorTimeTo != null">
+                AND pbar.TOLL_COLLECTOR_TIME &gt;#{tollCollectorTimeFrom}
+                AND pbar.TOLL_COLLECTOR_TIME &lt;#{tollCollectorTimeTo}
+            </if>
+            <if test="isBackPay != null">
+                AND pbar.IS_BACK_PAY = #{isBackPay}
+            </if>
+            <if test="arrearStatus != null">
+                AND pbar.ARREAR_STATUS = #{arrearStatus}
+            </if>
+            <if test="paidParkName != null">
+                AND pbar.PARK_NAME like CONCAT('%',#{paidParkName},'%')
+            </if>            
+        </where>
+        ORDER BY pbar.ARREAR_MARK_TIME DESC
+        <if test="limitStart != null and limitEnd > 0">
+            limit ${limitStart}, ${limitEnd}
+        </if>
+) as a 
+left JOIN PARKING_RECORD pr ON a.TOP_BILL_CODE = pr.TOP_BILL_CODE
+<where>
+<if test="leaveTimeFrom != null and leaveTimeTo != null">
+                AND pr.LEAVE_TIME &gt;#{leaveTimeFrom}
+                AND pr.LEAVE_TIME &lt;#{leaveTimeTo}
+</if>
+<if test="parkId!=null and parkId!=''">
+                AND pr.PARK_ID = #{parkId}
+</if>
+<if test="parkIds!=null and parkIds!=''">
+                AND pr.PARK_ID IN (${parkIds})
+</if>
+</where>
+ORDER BY pr.ENTER_TIME DESC
+) as b
+left JOIN tbl_device_parking t ON t.pk_GlobalID = b.PARK_ID
+<where>
+<if test="parkName != null">
+                AND t.name like CONCAT('%',#{parkName},'%')
+            </if>
+</where>
+
+5、校正流水
+select a.*, pb.TOP_BILL_CODE, pr.ENTER_CHANNEL_NAME, pr.LEAVE_CHANNEL_NAME, tdp.name from 
+(SELECT
+        pccmh.id,        
+        pccmh.NEW_CAR_CODE,
+        pccmh.OLD_CAR_CODE,
+        pccmh.ORIGIN_CAR_CODE,        
+        pccmh.MODIFY_TYPE,
+        pccmh.MODIFY_BY,
+        pccmh.MODIFY_DATE,
+        pccmh.PARKING_RECORD_ID,
+        pccmh.PARK_ID
+        from parking_car_code_modify_his as pccmh
+<where>
+            
+            <if test="newCarCode != null">
+                AND pccmh.NEW_CAR_CODE like CONCAT('%',#{newCarCode},'%')
+            </if>
+            <if test="carCode != null">
+                AND pccmh.ORIGIN_CAR_CODE like CONCAT('%',#{carCode},'%')
+            </if>
+            <if test="channelName != null"><!-- 过程校正没有对应的通道名称所以不用管 -->
+                AND pccmh.ENTRANCE_NAME like CONCAT('%',#{channelName},'%')
+            </if>
+            <if test="modifyType != null">
+                AND pccmh.MODIFY_TYPE = #{modifyType}
+            </if>
+            <if test="modifyBy != null">
+                AND pccmh.MODIFY_BY like CONCAT('%',#{modifyBy},'%')
+            </if>
+            <if test="modifyDateFrom != null and modifyDateTo != null">
+                AND pccmh.MODIFY_DATE &gt;#{modifyDateFrom}
+                AND pccmh.MODIFY_DATE &lt;#{modifyDateTo}
+            </if>
+            <if test="parkId!=null and parkId!=''">
+                AND pccmh.PARK_ID = #{parkId}
+            </if>
+            <if test="parkIds!=null and parkIds!=''">
+                AND pccmh.PARK_ID IN (${parkIds})
+            </if>
+        </where>
+        ORDER BY pccmh.MODIFY_DATE DESC
+        <if test="limitStart != null and limitEnd > 0">
+            limit ${limitStart}, ${limitEnd}
+        </if>
+)as a
+left JOIN parking_bill as pb on pb.PARKING_RECORD_ID = a.PARKING_RECORD_ID
+left JOIN parking_record as pr on pr.TOP_BILL_CODE = pb.TOP_BILL_CODE
+left JOIN tbl_device_parking as tdp on a.PARK_ID = tdp.pk_GlobalID
+<where>
+<if test="parkName != null">
+                AND tdp.name like CONCAT('%',#{parkName},'%')
+            </if>
+</where>
+
+6、异常拍照
+
+select a.*,tdp.name from
+(
+select
+    papr.ID,
+    papr.PARK_ID,
+    papr.CAR_CODE_PHOTO_URL,
+    papr.CAR_CODE,
+    papr.CARD_CODE,
+    papr.PHOTO_TIME,
+    papr.CHANNEL_TYPE,
+    papr.CHANNEL_NAME
+    from park_abnormal_photo_record as papr
+    <where>
+      <if test="carCode != null">
+        AND papr.CAR_CODE like CONCAT('%',#{carCode},'%')
+      </if>
+      <if test="cardCode != null">
+        AND papr.CARD_CODE like CONCAT('%',#{cardCode},'%')
+      </if>
+      <if test="photoTimeFrom != null and photoTimeTo != null">
+        AND papr.PHOTO_TIME &gt;#{photoTimeFrom}
+        AND papr.PHOTO_TIME &lt;#{photoTimeTo}
+      </if>
+      <if test="channelName != null">
+        AND papr.CHANNEL_NAME like CONCAT('%',#{channelName},'%')
+      </if>
+      <if test="channelType != null">
+        AND papr.CHANNEL_TYPE = #{channelType}
+      </if>
+      <if test="parkId!=null and parkId!=''">
+        AND papr.PARK_ID = #{parkId}
+      </if>
+      <if test="parkIds!=null and parkIds!=''">
+        AND papr.PARK_ID IN (${parkIds})
+      </if>
+    </where>
+    ORDER BY papr.PHOTO_TIME DESC
+    <if test="limitStart != null and limitEnd > 0">
+      limit ${limitStart}, ${limitEnd}
+    </if>
+) as a
+inner JOIN tbl_device_parking as tdp on a.PARK_ID = tdp.pk_GlobalID
+<where>
+      <if test="parkName != null">
+        AND tdp.name like CONCAT('%',#{parkName},'%')
+      </if>
+</where>
