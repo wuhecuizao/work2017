@@ -543,14 +543,14 @@ CREATE TABLE `EMERGENCY_CONFIG` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='告警设置表';
 
 CREATE TABLE `EMERGENCY_RECORD` (
-	`ID` INT(11) NOT NULL AUTO_INCREMENT,
-	`CARRIER_ID` bigint(20) NOT NULL COMMENT '运营商ID',	
-    `PARK_ID` BIGINT(20) NOT NULL DEFAULT '0' COMMENT '停车场ID',
-	`EM_TYPE` tinyint(4) NOT NULL DEFAULT '0' COMMENT '告警类型，0黑名单进场，1黑名单出场，2红名单进场，3红名单出场，4指定车牌进场，5指定车牌出场，6告警现场管理员--黑名单进场,7告警现场管理员--黑名单出场,8告警现场管理员--红名单进场,9告警现场管理员--红名单出场,10告警现场管理员--指定车牌进场,11告警现场管理员--指定车牌出场',
-    `EM_TITLE` varchar(50) NOT NULL COMMENT '告警标题',
-    `EM_MSG` varchar(60) NOT NULL COMMENT '告警内容',
-    `CREATE_TIME` datetime DEFAULT NULL COMMENT '告警时间',
-	PRIMARY KEY (`id`)
+	`ID` int(11) NOT NULL AUTO_INCREMENT,
+  `CARRIER_ID` bigint(20) NOT NULL COMMENT '运营商ID',
+  `PARK_ID` bigint(20) NOT NULL DEFAULT '0' COMMENT '停车场ID',
+  `EM_TYPE` tinyint(4) NOT NULL DEFAULT '0' COMMENT '告警类型，0黑名单进场，1黑名单出场，2红名单进场，3红名单出场，4指定车牌进场，5指定车牌出场，6告警现场管理员--黑名单进场,7告警现场管理员--黑名单出场,8告警现场管理员--红名单进场,9告警现场管理员--红名单出场,10告警现场管理员--指定车牌进场,11告警现场管理员--指定车牌出场',
+  `EM_TITLE` varchar(50) NOT NULL COMMENT '告警标题',
+  `EM_MSG` varchar(60) NOT NULL COMMENT '告警内容',
+  `CREATE_TIME` datetime DEFAULT NULL COMMENT '告警时间',
+  PRIMARY KEY (`ID`)
 )
 ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='告警记录表';
 
@@ -587,10 +587,100 @@ update authz_resource set LEVEL=2 where id=25100;
 update authz_resource set LEVEL=3 where id=25101;
 update authz_resource set LEVEL=3 where id=25102;
 
-##注意nginx加入
+二、注意nginx后端配置加入
 proxy_set_header Upgrade $http_upgrade;
 proxy_set_header Connection "upgrade";
 
+
+三、配置文件更改
+config.properties：
+
+#url for open invoice
+open_invoice_url=https://devnew.yidianting.xin/weixin/html/invoice.do
+
+#url for data push binding
+dataPushQrUrl=https://devnew.yidianting.xin/mgr-weixin/manage/report/bind.do?operatorID=%s
+
+jpush_appKey=1d5a5035d0109e7d58079ac8
+jpush_secret=35e2b527959fd4ee69fc5047
+jpush_sms_temp_id=1
+
+
+
+spring-kafka.xml：
+
+<!-- 告警处理Cosumer config -->
+	<bean id="YdtMgrEmergencyKafkaListenerContainerFactory"
+		  class="org.springframework.kafka.listener.ConcurrentMessageListenerContainer">
+		<constructor-arg index="0">
+			<bean class="org.springframework.kafka.core.DefaultKafkaConsumerFactory">
+				<constructor-arg>
+					<map>
+						<entry key="bootstrap.servers" value="${bus.bootstrap.servers}" />
+						<entry key="group.id" value="ydt-mgr-emergency-1" />
+						<entry key="key.deserializer"
+							   value="org.apache.kafka.common.serialization.StringDeserializer" />
+						<entry key="value.deserializer"
+							   value="org.apache.kafka.common.serialization.ByteArrayDeserializer" />
+						<entry key="enable.auto.commit" value="false" />
+						<entry key="request.timeout.ms" value="40000"></entry>
+						<entry key="session.timeout.ms" value="30000"></entry>
+						<entry key="heartbeat.interval.ms" value="10000"></entry>
+					</map>
+				</constructor-arg>
+			</bean>
+		</constructor-arg>
+		<constructor-arg index="1" ref="ydtMgrEmergencyContainerProperties" />
+		<property name="concurrency" value="20"></property>
+	</bean>
+
+	<bean id="ydtMgrEmergencyContainerProperties"
+		  class="com.ake.its.park.mq.kafka.config.YdtContainerProperties">
+		<constructor-arg index="0" ref="ydtMgrEmergencyKafkaListenerTopics">
+		</constructor-arg>
+		<property name="messageListener" ref="ydtMgrEmergencyKafkaListener"></property>
+	</bean>
+
+	<!-- 监听处理器 -->
+	<bean id="ydtMgrEmergencyKafkaListener"
+		  class="com.ake.its.park.mgr.listener.kafka.EmergencyKafkaListener"></bean>
+	<!-- 监听的topic -->
+	<bean id="ydtMgrEmergencyKafkaListenerTopics"
+		  class="com.ake.its.park.mgr.listener.kafka.EmergencyKafkaListenerTopics"></bean>
+
+	<!-- 告警处理Cosumer config end -->
+	
+spring-websocket.xml（新增）：
+
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:websocket="http://www.springframework.org/schema/websocket"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+                        http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+                        http://www.springframework.org/schema/websocket
+                        http://www.springframework.org/schema/websocket/spring-websocket.xsd">
+	<bean id="websocket" class="com.ake.its.park.mgr.websocket.handler.SystemWebSocketHandler">
+		 <property name="redisTemplate" ref="redisTemplate"/>
+	</bean>
+
+	<websocket:handlers allowed-origins="*">
+		<websocket:mapping path="/websocket/emergency.do" handler="websocket" />
+		<websocket:handshake-interceptors>
+			<bean class="com.ake.its.park.mgr.websocket.interceptor.WebSocketHandshakeInterceptor"/>
+		</websocket:handshake-interceptors>
+		<!--<websocket:sockjs />-->
+	</websocket:handlers>
+
+	<bean
+		class="org.springframework.web.socket.server.standard.ServletServerContainerFactoryBean">
+		<property name="maxTextMessageBufferSize" value="8192" />
+		<property name="maxBinaryMessageBufferSize" value="8192" />
+	</bean>
+
+</beans>
+
+极光推送更改 mgr-weixin
 
 
 
