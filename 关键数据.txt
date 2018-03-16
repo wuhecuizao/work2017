@@ -498,6 +498,7 @@ CREATE TABLE `DATA_PUSH_REPORTS` (
   `ID` bigint(20) NOT NULL AUTO_INCREMENT,
   `NAME` VARCHAR(64) NOT NULL COMMENT '报表名称',
   `URL` VARCHAR(256) NOT NULL COMMENT '报表链接地址',
+  `ACTIVED` tinyint(4) DEFAULT '1' COMMENT '是否可以推送给用户（0未激活 不可已推送，1激活 可以推送）',
   `CREATE_TIME` DATETIME NULL DEFAULT NULL COMMENT '创建时间',
   `CREATE_BY` VARCHAR(32) NULL DEFAULT NULL COMMENT '创建人',
   `UPDATE_TIME` DATETIME NULL DEFAULT NULL COMMENT '修改时间',
@@ -505,8 +506,10 @@ CREATE TABLE `DATA_PUSH_REPORTS` (
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='数据推送--报表情况';
 
+###ALTER TABLE DATA_PUSH_REPORTS ADD column 'ACTIVED' tinyint(4) DEFAULT '1' COMMENT '是否可以推送给用户（0未激活 不可已推送，1激活 可以推送）';
+
 insert into authz_resource (id,name,url,permission,from_system,type,ICON_STYLE,PARENT_ID,`LEVEL`,ORDER_VAL) values 
-(26200,'数据推送','/report/data_push','REPORT:DATA_PUSH',2,1,null,5000,2,13),
+(26200,'报表推送','/report/data_push','REPORT:DATA_PUSH',2,1,null,5000,2,13),
 (26201,'页面查看','#','REPORT:DATA_PUSH:LIST',2,2,null,26200,3,0),
 (26202,'导出','#','REPORT:DATA_PUSH:EXPORT',2,2,null,26200,3,1),
 (26203,'添加推送人员','#','REPORT:DATA_PUSH:ADD',2,2,null,26200,3,2),

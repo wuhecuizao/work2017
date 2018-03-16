@@ -6,6 +6,8 @@
 /home/ake/app/tomcat-mgr/bin
 sh startup.sh
 
+注意mgr的配置文件是直接复制tomcat webapps classes 下的相关文件的，修改也直接在其中修改即可
+
 2、前置机部署策略：
 10.10.44.105（172.18.30.5） root ake123
 #打包
@@ -17,6 +19,12 @@ sh startup.sh
 /home/ake/app/park-data-connector-front
 ./fetch.sh
 可使用ps -ef|grep park查看两个客户端的运行状况
+
+查看前置机开发环境日志：
+cd /home/ake/app/park-data-connector-handler/1.8.0.beta/logs
+tail -f tail -f connector-server-handler.log
+cd /home/ake/app/park-data-connector-front/1.8.0.beta/logs
+tail -f connector-server-front.log
 
 3、线下线上数据同步接口（12.26启用新ip地址）
 http://172.18.255.232:88/svn/AZP_ProdctrlArea/04研发文档-产品文件/07接口文档/01我方接口文档/前置机/对内接口/一点停线下线上数据同步接口.doc
@@ -43,13 +51,6 @@ YDTO 构建路径
 http://172.18.30.4:6800/#/Homepage 开放平台开发环境地址（代码在10.10.44.105，部署在10.10.44.104）
 10.10.44.104:2244
 Admin123
-
-查看开发环境日志：
-cd /home/ake/app/park-data-connector-handler/1.8.0.beta/logs
-tail -f tail -f connector-server-handler.log
-cd /home/ake/app/park-data-connector-front/1.8.0.beta/logs
-tail -f connector-server-front.log
-
 
 5、罗凯(罗凯) 01-09 17:18:28
 https://devnew.yidianting.xin/mgr-weixin/h5/booking/index.html 开发环境h5的路径
@@ -177,3 +178,8 @@ LIMIT 10
 启动 /usr/local/nginx1.9.9/sbin/nginx -c /usr/local/nginx1.9.9/conf/nginx.conf
 ps aux|grep nginx
 ll /proc/5764
+
+19、开发开票连接：https://devnew.yidianting.xin/weixin/html/invoice.do?if=2&pc=2KPGBT6T&bc=2018031509565408043711
+测试环境：https://testdev.yidianting.xin/weixin/html/invoice.do?if=2&pc=2KPGBT6T&bc=2018031509565408043711
+
+20、测试环境你有空可以看下172.18.40.5 （2244） root/123456  /home/ake/ydt/park-data-connector-front/1.7.2.test2/logs
