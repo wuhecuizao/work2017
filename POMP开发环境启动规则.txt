@@ -8,7 +8,7 @@ sh startup.sh
 
 注意mgr的配置文件是直接复制tomcat webapps classes 下的相关文件的，修改也直接在其中修改即可
 
-2、前置机部署策略：
+2、前置机部署策略：（一点停--接口服务组件）
 10.10.44.105（172.18.30.5） root ake123
 #打包
 /home/ake/workspace/park-data-connector-parent
@@ -191,3 +191,5 @@ http://172.18.255.232:88/svn/ITS_Parking_Product/Parking/01_DvlpArea/03_Coding/0
 3、在目录E:\work\for-svn-work\park-data-connector-parent下右键svn/ 分支/标记
 打开1目录，点击确定，然后相对路径就自动复制到“至路径”中，在此路径后加入src，填写说明点击确定即可
 4、将1目录发给佩玲
+
+注意：若某个说明文件提交后需要更改可直接在svn版本库浏览器中删除，在新增
