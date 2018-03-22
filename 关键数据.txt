@@ -473,7 +473,7 @@ CREATE TABLE `DATA_PUSH_USER_DETAIL` (
 	`CARRIER_ID` bigint(11) DEFAULT NULL COMMENT '运营商ID',
 	`OPEN_ID` VARCHAR(50) NULL DEFAULT NULL COMMENT 'open id',
 	`WEIXIN_ID` VARCHAR(32) NULL DEFAULT NULL COMMENT '微信id',
-	`REMARK` VARCHAR(50) DEFAULT NULL COMMENT '备注',
+	`REMARK` VARCHAR(105) DEFAULT NULL COMMENT '备注',
 	`DELETED` tinyint(1) DEFAULT '0' COMMENT '是否逻辑删除（0未删除，1删除）',
 	`CREATE_TIME` DATETIME NULL DEFAULT NULL COMMENT '创建时间',
 	`CREATE_BY` VARCHAR(32) NULL DEFAULT NULL COMMENT '创建人',
@@ -587,7 +587,7 @@ update authz_resource set LEVEL=2 where id=25100;
 update authz_resource set LEVEL=3 where id=25101;
 update authz_resource set LEVEL=3 where id=25102;
 
-二、注意nginx后端配置加入
+二、注意nginx配置加入
 proxy_set_header Upgrade $http_upgrade;
 proxy_set_header Connection "upgrade";
 
@@ -601,9 +601,19 @@ open_invoice_url=https://devnew.yidianting.xin/weixin/html/invoice.do
 #url for data push binding
 dataPushQrUrl=https://devnew.yidianting.xin/mgr-weixin/manage/report/bind.do?operatorID=%s
 
+########极光推送配置start
+#开发、测试环境
 jpush_appKey=1d5a5035d0109e7d58079ac8
 jpush_secret=35e2b527959fd4ee69fc5047
 jpush_sms_temp_id=1
+
+#生产环境
+#是否是生成环境
+isProductMode=true
+jpush_appKey=0280b687b5fc5c04675265f9
+jpush_secret=0e949b10a2690e2b1a0dd236
+jpush_sms_temp_id=1
+########极光推送配置end
 
 
 
@@ -681,6 +691,9 @@ spring-websocket.xml（新增）：
 </beans>
 
 极光推送更改 mgr-weixin
+
+suewjopctuhobfca
+cegtwgxlavllbedf
 
 
 
