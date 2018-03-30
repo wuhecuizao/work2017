@@ -195,3 +195,11 @@ http://172.18.255.232:88/svn/ITS_Parking_Product/Parking/01_DvlpArea/03_Coding/0
 注意：若某个说明文件提交后需要更改可直接在svn版本库浏览器中删除，在新增
 
 22、开放平台 测试环境 172.18.40.8 2244 root ake123
+
+23、
+cat -n catalina-2018-03-27-14.log |grep "getVipOperation" 返回关键字行数
+cat -n catalina-2018-03-27-14.log |tail -n +1046879|head -n 20 返回关键字所在行后20行记录
+cat -n catalina.out |grep "getAllOperatorIDRecursive" pomp日志查看登陆递归调用时间
+du -h --max-depth=1 |sort    #查看当前目录下所有一级子目录文件夹大小 并排序
+
+24、查看win端口占用情况：netstat -ano|findstr 端口
